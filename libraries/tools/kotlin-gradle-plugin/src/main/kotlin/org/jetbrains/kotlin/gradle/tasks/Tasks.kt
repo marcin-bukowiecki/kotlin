@@ -165,7 +165,6 @@ abstract class AbstractKotlinCompile<T : CommonCompilerArguments>() : AbstractKo
         cacheOnlyIfEnabledForKotlin()
     }
 
-    @get:Internal
     private val layout = project.layout
 
     // avoid creating directory in getter: this can lead to failure in parallel build
@@ -369,11 +368,9 @@ abstract class AbstractKotlinCompile<T : CommonCompilerArguments>() : AbstractKo
         }
     }
 
-    protected open fun skipCondition(inputs: IncrementalTaskInputs): Boolean {
-        return !inputs.isIncremental && getSourceRoots().kotlinSourceFiles.isEmpty()
-    }
+    protected open fun skipCondition(): Boolean =
+        getSourceRoots().kotlinSourceFiles.isEmpty()
 
-    @get:Internal
     private val projectDir = project.rootProject.projectDir
 
     private fun executeImpl(inputs: IncrementalTaskInputs) {
@@ -385,7 +382,7 @@ abstract class AbstractKotlinCompile<T : CommonCompilerArguments>() : AbstractKo
 
         logger.kotlinDebug { "All kotlin sources: ${allKotlinSources.pathsAsStringRelativeTo(projectDir)}" }
 
-        if (skipCondition(inputs)) {
+        if (!inputs.isIncremental && skipCondition()) {
             // Skip running only if non-incremental run. Otherwise, we may need to do some cleanup.
             logger.kotlinDebug { "No Kotlin files found, skipping Kotlin compiler task" }
             return
@@ -467,7 +464,7 @@ class KotlinJvmCompilerArgumentsProvider
         compileClasspath = taskProvider.compileClasspath
         destinationDir = taskProvider.destinationDir
         kotlinOptions = listOfNotNull(
-            taskProvider.parentKotlinOptionsImpl as KotlinJvmOptionsImpl?,
+            taskProvider.parentKotlinOptionsImpl,
             taskProvider.kotlinOptions as KotlinJvmOptionsImpl
         )
     }

@@ -59,13 +59,13 @@ open class NodeJsRootExtension(@Transient val rootProject: Project) : Configurat
         get() = rootProject.tasks.withType(NodeJsSetupTask::class.java).named(NodeJsSetupTask.NAME)
 
     val npmInstallTaskProvider: TaskProvider<out KotlinNpmInstallTask>?
-        get() = rootProject?.tasks?.withType(KotlinNpmInstallTask::class.java)?.named(KotlinNpmInstallTask.NAME)
+        get() = rootProject.tasks.withType(KotlinNpmInstallTask::class.java).named(KotlinNpmInstallTask.NAME)
 
     val packageJsonUmbrellaTaskProvider: TaskProvider<Task>
         get() = rootProject.tasks.named(PACKAGE_JSON_UMBRELLA_TASK_NAME)
 
     val rootPackageJsonTaskProvider: TaskProvider<RootPackageJsonTask>?
-        get() = rootProject?.tasks?.withType(RootPackageJsonTask::class.java)?.named(RootPackageJsonTask.NAME)
+        get() = rootProject.tasks.withType(RootPackageJsonTask::class.java).named(RootPackageJsonTask.NAME)
 
     val npmCachesSetupTaskProvider: TaskProvider<out KotlinNpmCachesSetup>?
         get() = rootProject?.tasks?.withType(KotlinNpmCachesSetup::class.java)?.named(KotlinNpmCachesSetup.NAME)
