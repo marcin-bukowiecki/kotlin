@@ -10,6 +10,7 @@ import org.jetbrains.kotlin.ir.IrElement
 import org.jetbrains.kotlin.ir.declarations.*
 import org.jetbrains.kotlin.ir.expressions.IrExpressionBody
 import org.jetbrains.kotlin.ir.symbols.*
+import org.jetbrains.kotlin.ir.types.IrSimpleType
 import org.jetbrains.kotlin.ir.types.impl.IrUninitializedType
 import org.jetbrains.kotlin.ir.util.createIrClassFromDescriptor
 import org.jetbrains.kotlin.ir.util.withScope
@@ -76,8 +77,13 @@ class StandaloneDeclarationGenerator(private val context: GeneratorContext) {
         }
     }
 
-    fun generateClass(startOffset: Int, endOffset: Int, origin: IrDeclarationOrigin, descriptor: ClassDescriptor, symbol: IrClassSymbol): IrClass {
-        val irClass = irFactory.createIrClassFromDescriptor(startOffset, endOffset, origin, symbol, descriptor)
+    fun generateClass(
+        startOffset: Int, endOffset: Int, origin: IrDeclarationOrigin, descriptor: ClassDescriptor, symbol: IrClassSymbol
+    ): IrClass {
+        val irClass = irFactory.createIrClassFromDescriptor(
+            startOffset, endOffset, origin, symbol, descriptor,
+            inlineClassRepresentation = descriptor.inlineClassRepresentation?.mapUnderlyingType { it.toIrType() as IrSimpleType }
+        )
 
         symbolTable.withScope(irClass) {
             irClass.metadata = DescriptorMetadataSource.Class(descriptor)

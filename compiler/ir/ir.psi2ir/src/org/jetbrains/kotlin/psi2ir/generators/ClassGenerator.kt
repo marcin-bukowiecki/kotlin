@@ -29,6 +29,7 @@ import org.jetbrains.kotlin.ir.expressions.impl.IrReturnImpl
 import org.jetbrains.kotlin.ir.expressions.mapValueParameters
 import org.jetbrains.kotlin.ir.expressions.putTypeArguments
 import org.jetbrains.kotlin.ir.expressions.typeParametersCount
+import org.jetbrains.kotlin.ir.types.IrSimpleType
 import org.jetbrains.kotlin.ir.util.SYNTHETIC_OFFSET
 import org.jetbrains.kotlin.ir.util.createIrClassFromDescriptor
 import org.jetbrains.kotlin.ir.util.declareSimpleFunctionWithOverrides
@@ -90,7 +91,10 @@ class ClassGenerator(
         return context.symbolTable.declareClass(classDescriptor) {
             context.irFactory.createIrClassFromDescriptor(
                 startOffset, endOffset, IrDeclarationOrigin.DEFINED, it, classDescriptor,
-                context.symbolTable.nameProvider.nameForDeclaration(classDescriptor), visibility, modality
+                context.symbolTable.nameProvider.nameForDeclaration(classDescriptor), visibility, modality,
+                classDescriptor.inlineClassRepresentation?.mapUnderlyingType { type ->
+                    type.toIrType() as? IrSimpleType ?: error("Inline class underlying type is not a simple type: $classDescriptor")
+                }
             ).apply {
                 metadata = DescriptorMetadataSource.Class(it.descriptor)
             }

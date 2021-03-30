@@ -239,6 +239,7 @@ class Fir2IrClassifierStorage(
                     regularClass.classKind,
                     components.visibilityConverter.convertToDescriptorVisibility(visibility),
                     modality,
+                    inlineClassRepresentation = computeInlineClassRepresentation(regularClass),
                     isCompanion = regularClass.isCompanion,
                     isInner = regularClass.isInner,
                     isData = regularClass.isData,

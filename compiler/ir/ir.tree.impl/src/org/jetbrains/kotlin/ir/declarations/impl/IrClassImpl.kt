@@ -21,6 +21,7 @@ import org.jetbrains.kotlin.ir.ObsoleteDescriptorBasedAPI
 import org.jetbrains.kotlin.ir.declarations.*
 import org.jetbrains.kotlin.ir.expressions.IrConstructorCall
 import org.jetbrains.kotlin.ir.symbols.IrClassSymbol
+import org.jetbrains.kotlin.ir.types.IrSimpleType
 import org.jetbrains.kotlin.ir.types.IrType
 import org.jetbrains.kotlin.name.Name
 
@@ -33,6 +34,7 @@ class IrClassImpl(
     override val kind: ClassKind,
     override var visibility: DescriptorVisibility,
     override var modality: Modality,
+    override val inlineClassRepresentation: InlineClassRepresentation<IrSimpleType>? = null,
     override val isCompanion: Boolean = false,
     override val isInner: Boolean = false,
     override val isData: Boolean = false,

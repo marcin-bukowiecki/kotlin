@@ -479,6 +479,7 @@ internal class TestProcessor (val context: Context) {
                 ClassKind.CLASS,
                 DescriptorVisibilities.PRIVATE,
                 Modality.FINAL,
+                inlineClassRepresentation = null,
                 isCompanion = false,
                 isInner = false,
                 isData = false,

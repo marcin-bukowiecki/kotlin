@@ -14,6 +14,7 @@ import org.jetbrains.kotlin.ir.expressions.IrExpressionBody
 import org.jetbrains.kotlin.ir.expressions.impl.IrBlockBodyImpl
 import org.jetbrains.kotlin.ir.expressions.impl.IrExpressionBodyImpl
 import org.jetbrains.kotlin.ir.symbols.*
+import org.jetbrains.kotlin.ir.types.IrSimpleType
 import org.jetbrains.kotlin.ir.types.IrType
 import org.jetbrains.kotlin.name.Name
 import org.jetbrains.kotlin.serialization.deserialization.descriptors.DeserializedContainerSource
@@ -40,6 +41,7 @@ object IrFactoryImpl : IrFactory {
         kind: ClassKind,
         visibility: DescriptorVisibility,
         modality: Modality,
+        inlineClassRepresentation: InlineClassRepresentation<IrSimpleType>?,
         isCompanion: Boolean,
         isInner: Boolean,
         isData: Boolean,
@@ -50,7 +52,7 @@ object IrFactoryImpl : IrFactory {
         source: SourceElement,
     ): IrClass =
         IrClassImpl(
-            startOffset, endOffset, origin, symbol, name, kind, visibility, modality,
+            startOffset, endOffset, origin, symbol, name, kind, visibility, modality, inlineClassRepresentation,
             isCompanion, isInner, isData, isExternal, isInline, isExpect, isFun, source,
         )
 

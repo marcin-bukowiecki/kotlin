@@ -141,6 +141,7 @@ internal class EnumSpecialDeclarationsFactory(val context: Context) {
                     ClassKind.OBJECT,
                     DescriptorVisibilities.PUBLIC,
                     Modality.FINAL,
+                    inlineClassRepresentation = null,
                     isCompanion = false,
                     isInner = false,
                     isData = false,

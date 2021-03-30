@@ -208,6 +208,7 @@ internal class FunctionReferenceLowering(val context: Context): FileLoweringPass
                     ClassKind.CLASS,
                     DescriptorVisibilities.PRIVATE,
                     Modality.FINAL,
+                    inlineClassRepresentation = null,
                     isCompanion = false,
                     isInner = false,
                     isData = false,

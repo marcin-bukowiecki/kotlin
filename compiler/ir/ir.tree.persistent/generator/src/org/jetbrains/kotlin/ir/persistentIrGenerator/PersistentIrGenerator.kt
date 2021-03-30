@@ -107,6 +107,8 @@ internal object PersistentIrGenerator {
     val kind = +"override val kind: " + descriptorType("ClassKind")
     val visibility = +"visibility: " + DescriptorVisibility
     val modality = +"modality: " + descriptorType("Modality")
+    val inlineClassRepresentation = +"override val inlineClassRepresentation: " + descriptorType("InlineClassRepresentation") +
+            "<" + import("IrSimpleType", "org.jetbrains.kotlin.ir.types") + ">? = null"
     val isCompanion = +"override val isCompanion: Boolean = false"
     val isInner = +"override val isInner: Boolean = false"
     val isData = +"override val isData: Boolean = false"

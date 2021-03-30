@@ -6,12 +6,15 @@
 package org.jetbrains.kotlin.ir.builders.declarations
 
 import org.jetbrains.kotlin.descriptors.ClassKind
+import org.jetbrains.kotlin.descriptors.InlineClassRepresentation
 import org.jetbrains.kotlin.descriptors.Modality
 import org.jetbrains.kotlin.ir.declarations.IrClass
+import org.jetbrains.kotlin.ir.types.IrSimpleType
 
 class IrClassBuilder : IrDeclarationBuilder() {
     var kind: ClassKind = ClassKind.CLASS
     var modality: Modality = Modality.FINAL
+    var inlineClassRepresentation: InlineClassRepresentation<IrSimpleType>? = null
 
     var isCompanion: Boolean = false
     var isInner: Boolean = false
@@ -26,6 +29,7 @@ class IrClassBuilder : IrDeclarationBuilder() {
 
         kind = from.kind
         modality = from.modality
+        inlineClassRepresentation = from.inlineClassRepresentation
         isCompanion = from.isCompanion
         isInner = from.isInner
         isData = from.isData

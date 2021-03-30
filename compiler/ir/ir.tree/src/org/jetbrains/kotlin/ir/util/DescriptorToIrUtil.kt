@@ -10,6 +10,7 @@ import org.jetbrains.kotlin.ir.declarations.IrClass
 import org.jetbrains.kotlin.ir.declarations.IrDeclarationOrigin
 import org.jetbrains.kotlin.ir.declarations.IrFactory
 import org.jetbrains.kotlin.ir.symbols.IrClassSymbol
+import org.jetbrains.kotlin.ir.types.IrSimpleType
 import org.jetbrains.kotlin.name.Name
 import org.jetbrains.kotlin.resolve.descriptorUtil.isEffectivelyExternal
 import org.jetbrains.kotlin.resolve.isInlineClass
@@ -28,16 +29,17 @@ val ParameterDescriptor.isNoinline: Boolean
     get() = this is ValueParameterDescriptor && isNoinline
 
 fun IrFactory.createIrClassFromDescriptor(
-        startOffset: Int,
-        endOffset: Int,
-        origin: IrDeclarationOrigin,
-        symbol: IrClassSymbol,
-        descriptor: ClassDescriptor,
-        name: Name = descriptor.name,
-        visibility: DescriptorVisibility = descriptor.visibility,
-        modality: Modality = descriptor.modality
+    startOffset: Int,
+    endOffset: Int,
+    origin: IrDeclarationOrigin,
+    symbol: IrClassSymbol,
+    descriptor: ClassDescriptor,
+    name: Name = descriptor.name,
+    visibility: DescriptorVisibility = descriptor.visibility,
+    modality: Modality = descriptor.modality,
+    inlineClassRepresentation: InlineClassRepresentation<IrSimpleType>? = null,
 ): IrClass = createClass(
-    startOffset, endOffset, origin, symbol, name, descriptor.kind, visibility, modality,
+    startOffset, endOffset, origin, symbol, name, descriptor.kind, visibility, modality, inlineClassRepresentation,
     descriptor.isCompanionObject, descriptor.isInner, descriptor.isData, descriptor.isEffectivelyExternal(),
     descriptor.isInlineClass(), descriptor.isExpect, descriptor.isFun, descriptor.source
 )

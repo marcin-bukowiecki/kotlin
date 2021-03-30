@@ -24,7 +24,7 @@ internal fun IrFactory.buildClass(builder: IrClassBuilder): IrClass = with(build
     createClass(
         startOffset, endOffset, origin,
         IrClassSymbolImpl(),
-        name, kind, visibility, modality,
+        name, kind, visibility, modality, inlineClassRepresentation,
         isCompanion, isInner, isData, isExternal, isInline, isExpect, isFun
     )
 }
