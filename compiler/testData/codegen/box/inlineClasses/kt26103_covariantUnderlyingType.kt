@@ -1,6 +1,7 @@
 // KJS_WITH_FULL_RUNTIME
 // !LANGUAGE: +InlineClasses
 // WITH_RUNTIME
+// IGNORE_BACKEND_FIR: JVM_IR
 
 inline class GList<T>(val xs: List<T>)
 inline class GSList<T>(val ss: List<String>)

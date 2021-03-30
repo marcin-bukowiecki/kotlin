@@ -253,9 +253,6 @@ class JvmSymbols(
             inlineClassRepresentation = InlineClassRepresentation(Name.identifier("value"), irBuiltIns.anyNType as IrSimpleType)
         ) { klass ->
             klass.addTypeParameter("T", irBuiltIns.anyNType, Variance.OUT_VARIANCE)
-            klass.addConstructor { isPrimary = true }.apply {
-                addValueParameter("value", irBuiltIns.anyNType)
-            }
         }
 
     val continuationImplClass: IrClassSymbol =

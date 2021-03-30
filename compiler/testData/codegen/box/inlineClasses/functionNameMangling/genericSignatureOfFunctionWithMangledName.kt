@@ -1,6 +1,7 @@
 // !LANGUAGE: +InlineClasses
 // TARGET_BACKEND: JVM
 // WITH_REFLECT
+// IGNORE_BACKEND_FIR: JVM_IR
 
 import kotlin.reflect.KFunction
 import kotlin.reflect.jvm.javaMethod
