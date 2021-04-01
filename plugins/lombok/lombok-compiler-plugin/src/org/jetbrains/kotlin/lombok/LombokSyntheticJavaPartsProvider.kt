@@ -75,28 +75,19 @@ class LombokSyntheticJavaPartsProvider(config: LombokConfig) : SyntheticJavaPart
             }
         } ?: SyntheticParts.Empty
 
-    private fun computeSyntheticParts(descriptor: ClassDescriptor): SyntheticParts =
-        processors.map { it.contribute(descriptor) }.reduce { a, b -> a + b }
+    private fun computeSyntheticParts(descriptor: ClassDescriptor): SyntheticParts {
+        val builder = SyntheticPartsBuilder()
+        processors.forEach { it.contribute(descriptor, builder) }
+        return builder.build()
+    }
 
     /**
      * Deduplicates generated functions using name and argument counts, as lombok does
      */
     private fun <T : FunctionDescriptor> addNonExistent(result: MutableCollection<T>, toAdd: List<T>) {
-        if (toAdd.isEmpty()) return
-
-        val index = mutableMapOf<Name, List<T>>()
-
-        fun addToIndex(f: T) {
-            index.merge(f.name, listOf(f)) { a, b -> a + b}
-        }
-
-        result.forEach(::addToIndex)
-
         toAdd.forEach { f ->
-            val existing = index.getOrDefault(f.name, emptyList())
-            if (existing.none { sameSignature (it, f) } ) {
+            if (result.none { sameSignature(it, f) }) {
                 result += f
-                addToIndex(f)
             }
         }
     }
