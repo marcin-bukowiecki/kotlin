@@ -28,71 +28,7 @@ import org.jetbrains.kotlin.test.services.fir.FirOldFrontendMetaConfigurator
 
 abstract class AbstractFirDiagnosticTest : AbstractKotlinCompilerTest() {
     override fun TestConfigurationBuilder.configuration() {
-        globalDefaults {
-            frontend = FrontendKinds.FIR
-            targetPlatform = JvmPlatforms.defaultJvmPlatform
-            dependencyKind = DependencyKind.Source
-        }
-
-        enableMetaInfoHandler()
-
-        useConfigurators(
-            ::CommonEnvironmentConfigurator,
-            ::JvmEnvironmentConfigurator,
-        )
-
-        useAdditionalSourceProviders(
-            ::AdditionalDiagnosticsSourceFilesProvider,
-            ::CoroutineHelpersSourceFilesProvider,
-        )
-        useFrontendFacades(::FirFrontendFacade)
-        useFrontendHandlers(
-            ::FirDiagnosticsHandler,
-            ::FirDumpHandler,
-            ::FirCfgDumpHandler,
-            ::FirCfgConsistencyHandler,
-        )
-
-        useMetaInfoProcessors(::PsiLightTreeMetaInfoProcessor)
-
-        forTestsMatching("compiler/testData/diagnostics/*") {
-            useAfterAnalysisCheckers(
-                ::FirIdenticalChecker,
-                ::FirFailingTestSuppressor,
-            )
-            useMetaTestConfigurators(::FirOldFrontendMetaConfigurator)
-        }
-
-        forTestsMatching("compiler/fir/analysis-tests/testData/*") {
-            defaultDirectives {
-                +FIR_DUMP
-                +COMPARE_WITH_LIGHT_TREE
-            }
-        }
-
-        forTestsMatching(
-            "compiler/testData/diagnostics/testsWithStdLib/*" or
-                    "compiler/fir/analysis-tests/testData/resolveWithStdlib/*" or
-                    "compiler/testData/diagnostics/tests/unsignedTypes/*"
-        ) {
-            defaultDirectives {
-                +WITH_STDLIB
-            }
-        }
-
-        forTestsMatching("compiler/fir/analysis-tests/testData/resolve/extendedCheckers/*") {
-            defaultDirectives {
-                +WITH_EXTENDED_CHECKERS
-            }
-        }
-
-        forTestsMatching("compiler/testData/diagnostics/tests/testsWithJava15/*") {
-            defaultDirectives {
-                JDK_KIND with TestJdkKind.FULL_JDK_15
-                +WITH_STDLIB
-                +WITH_REFLECT
-            }
-        }
+        diagnosticTestConfiguration()
     }
 }
 
@@ -103,6 +39,75 @@ abstract class AbstractFirDiagnosticsWithLightTreeTest : AbstractFirDiagnosticTe
             defaultDirectives {
                 +USE_LIGHT_TREE
             }
+        }
+    }
+}
+
+
+fun TestConfigurationBuilder.diagnosticTestConfiguration() {
+    globalDefaults {
+        frontend = FrontendKinds.FIR
+        targetPlatform = JvmPlatforms.defaultJvmPlatform
+        dependencyKind = DependencyKind.Source
+    }
+
+    enableMetaInfoHandler()
+
+    useConfigurators(
+        ::CommonEnvironmentConfigurator,
+        ::JvmEnvironmentConfigurator,
+    )
+
+    useAdditionalSourceProviders(
+        ::AdditionalDiagnosticsSourceFilesProvider,
+        ::CoroutineHelpersSourceFilesProvider,
+    )
+    useFrontendFacades(::FirFrontendFacade)
+    useFrontendHandlers(
+        ::FirDiagnosticsHandler,
+        ::FirDumpHandler,
+        ::FirCfgDumpHandler,
+        ::FirCfgConsistencyHandler,
+    )
+
+    useMetaInfoProcessors(::PsiLightTreeMetaInfoProcessor)
+
+    forTestsMatching("compiler/testData/diagnostics/*") {
+        useAfterAnalysisCheckers(
+            ::FirIdenticalChecker,
+            ::FirFailingTestSuppressor,
+        )
+        useMetaTestConfigurators(::FirOldFrontendMetaConfigurator)
+    }
+
+    forTestsMatching("compiler/fir/analysis-tests/testData/*") {
+        defaultDirectives {
+            +FIR_DUMP
+            +COMPARE_WITH_LIGHT_TREE
+        }
+    }
+
+    forTestsMatching(
+        "compiler/testData/diagnostics/testsWithStdLib/*" or
+                "compiler/fir/analysis-tests/testData/resolveWithStdlib/*" or
+                "compiler/testData/diagnostics/tests/unsignedTypes/*"
+    ) {
+        defaultDirectives {
+            +WITH_STDLIB
+        }
+    }
+
+    forTestsMatching("compiler/fir/analysis-tests/testData/resolve/extendedCheckers/*") {
+        defaultDirectives {
+            +WITH_EXTENDED_CHECKERS
+        }
+    }
+
+    forTestsMatching("compiler/testData/diagnostics/tests/testsWithJava15/*") {
+        defaultDirectives {
+            JDK_KIND with TestJdkKind.FULL_JDK_15
+            +WITH_STDLIB
+            +WITH_REFLECT
         }
     }
 }

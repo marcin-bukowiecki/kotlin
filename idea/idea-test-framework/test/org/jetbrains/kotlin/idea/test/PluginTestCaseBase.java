@@ -110,15 +110,25 @@ public class PluginTestCaseBase {
         switch (kind) {
             case MOCK_JDK:
                 return mockJdk();
+            case MODIFIED_MOCK_JDK:
+                return jdkByVersion("MODIFIED MOCK", KtTestUtil.findMockJdkRtModified());
+            case FULL_JDK_6:
+                return jdkByVersion("6", KtTestUtil.getJdk6Home());
             case FULL_JDK_9:
-                String jre9 = KtTestUtil.getJdk9Home().getPath();
-                VfsRootAccess.allowRootAccess(jre9);
-                return getSdk(jre9, "Full JDK 9");
+                return jdkByVersion("9", KtTestUtil.getJdk9Home());
             case FULL_JDK:
                 return fullJdk();
+            case FULL_JDK_15:
+                return jdkByVersion("15", KtTestUtil.getJdk15Home());
             default:
                 throw new UnsupportedOperationException(kind.toString());
         }
+    }
+
+    private static Sdk jdkByVersion(String version, File jdkDir) {
+        String path = jdkDir.getPath();
+        VfsRootAccess.allowRootAccess(path);
+        return getSdk(path, "Full JDK " + version);
     }
 
     public static boolean isAllFilesPresentTest(@NotNull String testName) {

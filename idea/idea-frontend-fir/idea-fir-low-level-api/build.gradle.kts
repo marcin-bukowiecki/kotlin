@@ -27,6 +27,9 @@ dependencies {
 // <neededFor>`AbstractFirLazyResolveTest` uses fir implementation of references which are not in classpath otherwise
     testRuntimeOnly(project(":idea:idea-frontend-fir"))
 // </neededFor>
+    testCompile(projectTests(":compiler:test-infrastructure-utils"))
+    testCompile(projectTests(":compiler:test-infrastructure"))
+    testCompile(projectTests(":compiler:tests-common-new"))
 
     testCompile(toolsJar())
     testCompile(projectTests(":idea"))
