@@ -48,7 +48,7 @@ sourceSets {
     "test" { projectDefault() }
 }
 
-projectTest {
+projectTest(parallel = true ) {
     dependsOn(":dist")
     workingDir = rootDir
     val useFirIdeaPlugin = kotlinBuildProperties.useFirIdeaPlugin
