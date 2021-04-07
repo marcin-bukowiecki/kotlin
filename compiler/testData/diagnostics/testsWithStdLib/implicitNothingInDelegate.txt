@@ -1,0 +1,5 @@
+package
+
+public val bar: kotlin.String
+public val m2: kotlin.collections.Map<kotlin.String, *>
+public fun foo(): kotlin.Unit
