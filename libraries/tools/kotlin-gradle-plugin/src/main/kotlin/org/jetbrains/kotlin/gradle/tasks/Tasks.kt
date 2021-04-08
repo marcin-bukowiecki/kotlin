@@ -110,25 +110,29 @@ abstract class AbstractKotlinCompileTool<T : CommonToolArguments>
 
     @get:Classpath
     @get:InputFiles
-    internal val computedCompilerClasspath: List<File> by lazy {
+    internal val computedCompilerClasspath: FileCollection = project.objects.fileCollection().from(project.provider {
+        when {
+            !compilerClasspath.isNullOrEmpty() -> compilerClasspath!!
+            compilerJarFile != null -> classpathWithCompilerJar
+            useFallbackCompilerSearch -> findKotlinCompilerClasspath(project)
+            else -> defaultCompilerClasspath
+        }
+    })
+
+    // a hack to remove compiler jar from the cp, will be dropped when compilerJarFile will be removed
+    private val classpathWithCompilerJar
+        get() = project.objects.fileCollection()
+            .from(compilerJarFile)
+            .from(defaultCompilerClasspath.filter { !it.nameWithoutExtension.startsWith("kotlin-compiler") })
+
+    protected abstract fun findKotlinCompilerClasspath(project: Project): List<File>
+
+    @TaskAction
+    fun verifyCompilerClasspath() {
         require(!defaultCompilerClasspath.isEmpty) {
             "Default Kotlin compiler classpath is empty! Task: ${this::class.qualifiedName}"
         }
-
-        when {
-            !compilerClasspath.isNullOrEmpty() -> compilerClasspath!!
-            compilerJarFile != null -> listOf(compilerJarFile!!) +
-                    defaultCompilerClasspath
-                        .filterNot {
-                            it.nameWithoutExtension.startsWith("kotlin-compiler")
-                        }
-            useFallbackCompilerSearch -> findKotlinCompilerClasspath(project)
-            else -> defaultCompilerClasspath.toList()
-        }
     }
-
-
-    protected abstract fun findKotlinCompilerClasspath(project: Project): List<File>
 }
 
 public class GradleCompileTaskProvider {

@@ -19,7 +19,6 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 import org.jetbrains.kotlin.gradle.tasks.cacheOnlyIfEnabledForKotlin
 import org.jetbrains.kotlin.gradle.tasks.clearLocalState
 import org.jetbrains.kotlin.gradle.utils.getValue
-import org.jetbrains.kotlin.gradle.utils.isJavaFile
 import java.io.File
 import java.util.jar.JarFile
 import javax.inject.Inject
@@ -55,7 +54,7 @@ abstract class KaptTask @Inject constructor(
 
     @get:Classpath
     @get:InputFiles
-    val compilerClasspath: List<File> by project.provider {
+    val compilerClasspath: FileCollection by project.provider {
         kotlinCompileTask.computedCompilerClasspath
     }
 

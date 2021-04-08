@@ -247,7 +247,8 @@ abstract class BaseGradleIT {
         val configurationCache: Boolean = false,
         val configurationCacheProblems: ConfigurationCacheProblems = ConfigurationCacheProblems.FAIL,
         val warningMode: WarningMode = WarningMode.Fail,
-        val useFir: Boolean = false
+        val useFir: Boolean = false,
+        val dryRun: Boolean = false
     )
 
     enum class ConfigurationCacheProblems {
@@ -925,6 +926,10 @@ Finished executing task ':$taskName'|
 
             if (options.useFir) {
                 add("-Pkotlin.useFir=true")
+            }
+
+            if (options.dryRun) {
+                add("--dry-run")
             }
 
             add("-Dorg.gradle.unsafe.configuration-cache=${options.configurationCache}")
