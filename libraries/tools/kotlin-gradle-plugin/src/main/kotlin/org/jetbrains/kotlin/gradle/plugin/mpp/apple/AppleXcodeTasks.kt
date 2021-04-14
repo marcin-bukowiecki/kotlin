@@ -6,8 +6,10 @@
 package org.jetbrains.kotlin.gradle.plugin.mpp.apple
 
 import org.gradle.api.Project
+import org.gradle.api.Task
 import org.gradle.api.plugins.BasePlugin
 import org.gradle.api.tasks.Copy
+import org.jetbrains.kotlin.gradle.dsl.multiplatformExtensionOrNull
 import org.jetbrains.kotlin.gradle.plugin.mpp.AbstractNativeLibrary
 import org.jetbrains.kotlin.gradle.plugin.mpp.KotlinNativeTarget
 import org.jetbrains.kotlin.gradle.plugin.mpp.NativeBuildType
@@ -92,6 +94,92 @@ internal fun Project.registerAssembleAppleFrameworkTask(framework: AbstractNativ
         task.dependsOn(framework.linkTaskName)
         task.from(framework.outputDirectory)
         task.into(appleFrameworkDir(xcFrameworkSearchDir))
+    }
+}
+
+private const val UMBRELLA_ASSEMBLE_APPLE_FRAMEWORK = "assembleAppleFramework"
+internal fun Project.registerUmbrellaAssembleAppleFrameworkTask() {
+    logger.info(XcodeEnvironment.toString())
+
+    val xcBuildType = XcodeEnvironment.buildType
+    val xcTarget = XcodeEnvironment.target
+    val xcFrameworkSearchDir = XcodeEnvironment.frameworkSearchDir
+
+    if (xcBuildType == null || xcTarget == null || xcFrameworkSearchDir == null) {
+        logger.info("$UMBRELLA_ASSEMBLE_APPLE_FRAMEWORK requires 'CONFIGURATION' and 'SDK_NAME'")
+        return
+    }
+
+    registerTask<Task>(UMBRELLA_ASSEMBLE_APPLE_FRAMEWORK) { task ->
+        task.group = "build"
+        task.description = "Build all frameworks as requested by Xcode's environment variables"
+
+        val appleFrameworks = multiplatformExtensionOrNull?.targets
+            ?.filterIsInstance<KotlinNativeTarget>()
+            ?.filter { it.konanTarget.family.isAppleFamily }
+
+        if (appleFrameworks.isNullOrEmpty()) return@registerTask
+
+        val taskNames = appleFrameworks
+            .filter { framework -> framework.konanTarget == xcTarget }
+            .map { framework -> framework.assembleAppleFrameworkTaskName(xcBuildType) }
+
+        task.enabled = taskNames.isNotEmpty()
+        task.dependsOn(taskNames.toTypedArray())
+        tasks.getByName("assemble").dependsOn(task)
+    }
+}
+
+private const val EMBED_AND_SIGN_APPLE_FRAMEWORK = "embedAndSignAppleFramework"
+internal fun Project.registerEmbedAndSignAppleFrameworkTask() {
+    val type = XcodeEnvironment.buildType
+    val target = XcodeEnvironment.target
+    val embeddedFrameworksDir = XcodeEnvironment.embeddedFrameworksDir
+    val frameworkSearchDir = XcodeEnvironment.frameworkSearchDir
+
+    if (type == null || target == null || embeddedFrameworksDir == null || frameworkSearchDir == null) {
+        logger.info("$EMBED_AND_SIGN_APPLE_FRAMEWORK requires 'SDK_NAME', 'CONFIGURATION', 'TARGET_BUILD_DIR' and 'FRAMEWORKS_FOLDER_PATH'")
+        return
+    }
+
+    registerTask<Copy>(EMBED_AND_SIGN_APPLE_FRAMEWORK) { task ->
+        task.group = "build"
+        task.description = "Embed and sign all frameworks as requested by Xcode's environment variables"
+
+        val appleFrameworks = multiplatformExtensionOrNull?.targets
+            ?.filterIsInstance<KotlinNativeTarget>()
+            ?.filter { it.konanTarget.family.isAppleFamily }
+
+        if (appleFrameworks.isNullOrEmpty()) return@registerTask
+
+        val sign = XcodeEnvironment.sign
+
+        task.dependsOn(UMBRELLA_ASSEMBLE_APPLE_FRAMEWORK)
+        task.inputs.apply {
+            property("type", type)
+            property("target", target)
+            property("embeddedFrameworksDir", embeddedFrameworksDir)
+            property("sign", sign)
+        }
+
+        val outputFiles =
+            appleFrameworks
+                .filter { it.konanTarget == target }
+                .map { it.binaries.getFramework(type).outputFile }
+
+        task.from(outputFiles.map { appleFrameworkDir(frameworkSearchDir).resolve(it.name) }.toTypedArray())
+        task.into(embeddedFrameworksDir)
+
+        if (sign != null) {
+            task.doLast {
+                outputFiles.forEach { outputFile ->
+                    val binaryFile = embeddedFrameworksDir.resolve(outputFile.name).resolve(outputFile.nameWithoutExtension)
+                    exec {
+                        it.commandLine("codesign", "--force", "--sign", sign, "--", binaryFile)
+                    }
+                }
+            }
+        }
     }
 }
 
