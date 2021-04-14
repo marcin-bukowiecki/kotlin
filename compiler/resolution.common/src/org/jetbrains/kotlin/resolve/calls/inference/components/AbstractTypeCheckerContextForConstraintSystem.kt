@@ -68,8 +68,8 @@ abstract class AbstractTypeCheckerContextForConstraintSystem(override val typeSy
         val hasNoInfer = subType.isTypeVariableWithNoInfer() || superType.isTypeVariableWithNoInfer()
         if (hasNoInfer) return true
 
-        val subTypeHasExact = subType.isTypeVariableWithExact()
-        val superTypeHasExact = superType.isTypeVariableWithExact()
+        val subTypeHasExact = subType.isTypeVariableWithExact() && with(typeSystemContext) { !superType.isCapturedType() }
+        val superTypeHasExact = superType.isTypeVariableWithExact() && with(typeSystemContext) { !subType.isCapturedType() }
 
         // we should strip annotation's because we have incorporation operation and they should be not affected
         val mySubType =

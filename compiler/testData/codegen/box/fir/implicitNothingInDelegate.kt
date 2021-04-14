@@ -1,5 +1,4 @@
 // TARGET_BACKEND: JVM_IR
-// IGNORE_BACKEND: JVM_IR
 // WITH_RUNTIME
 
 // Note: this test passes in FIR but fails in FE 1.0 + IR

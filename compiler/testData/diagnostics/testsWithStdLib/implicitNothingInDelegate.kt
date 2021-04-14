@@ -1,12 +1,19 @@
+// FIR_IDENTICAL
 // FIR_DUMP
+// WITH_REFLECT
+
+import kotlin.reflect.KProperty
+
+@Suppress("INVISIBLE_REFERENCE")
+public operator fun <V, V1 : V> Map<in String, @kotlin.internal.Exact V>.getValue(thisRef: Any?, property: KProperty<*>): V1 = null!!
 
 val m2: Map<String, *>  = mapOf("baz" to "bat")
-val bar: String get() = m2.<!IMPLICIT_NOTHING_TYPE_ARGUMENT_IN_RETURN_POSITION!>getValue<!>(null, ::bar)
+val bar: String get() = m2.getValue(null, ::bar)
 
 fun foo() {
     val m1: Map<String, Any>  = mapOf("foo" to "bar")
     val foo: String by m1
-    val baz: String by <!IMPLICIT_NOTHING_TYPE_ARGUMENT_IN_RETURN_POSITION!>m2<!>
+    val baz: String by m2
     println(foo) // bar
     println(baz) // kotlin.KotlinNothingValueException
     println(bar)
