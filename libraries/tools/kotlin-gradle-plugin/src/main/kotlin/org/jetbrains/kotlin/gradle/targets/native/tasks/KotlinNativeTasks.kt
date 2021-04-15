@@ -477,19 +477,19 @@ constructor(
     @Internal
     val binary: NativeBinary
 ) : AbstractKotlinNativeCompile<KotlinCommonToolOptions, KotlinNativeCompilation>() {
-    @Internal
-    @Transient // can't be serialized for Gradle configuration cache
-    final override val compilation: KotlinNativeCompilation = binary.compilation
+    @get:Internal
+    final override val compilation: KotlinNativeCompilation
+        get() = binary.compilation
 
     init {
-        dependsOn(compilation.compileKotlinTaskProvider)
+        dependsOn(project.provider { compilation.compileKotlinTaskProvider })
         // Frameworks actively uses symlinks.
         // Gradle build cache transforms symlinks into regular files https://guides.gradle.org/using-build-cache/#symbolic_links
         outputs.cacheIf { outputKind != FRAMEWORK }
     }
 
     @Internal // Taken into account by getSources().
-    val intermediateLibrary: Provider<File> = compilation.compileKotlinTask.outputFile
+    val intermediateLibrary: Provider<File> = project.provider { compilation.compileKotlinTask.outputFile }
 
     @InputFiles
     @SkipWhenEmpty
