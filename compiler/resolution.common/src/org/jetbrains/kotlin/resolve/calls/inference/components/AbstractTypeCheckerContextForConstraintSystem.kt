@@ -68,19 +68,18 @@ abstract class AbstractTypeCheckerContextForConstraintSystem(override val typeSy
         val hasNoInfer = subType.isTypeVariableWithNoInfer() || superType.isTypeVariableWithNoInfer()
         if (hasNoInfer) return true
 
-        val subTypeHasExact = subType.isTypeVariableWithExact() && with(typeSystemContext) { !superType.isCapturedType() }
-        val superTypeHasExact = superType.isTypeVariableWithExact() && with(typeSystemContext) { !subType.isCapturedType() }
+        val hasExact = subType.isTypeVariableWithExact() || superType.isTypeVariableWithExact()
 
         // we should strip annotation's because we have incorporation operation and they should be not affected
         val mySubType =
-            if (subTypeHasExact) extractTypeForProjectedType(subType, out = true)
+            if (hasExact) extractTypeForProjectedType(subType, out = true)
                 ?: with(typeSystemContext) { subType.removeExactAnnotation() } else subType
         val mySuperType =
-            if (superTypeHasExact) extractTypeForProjectedType(superType, out = false)
+            if (hasExact) extractTypeForProjectedType(superType, out = false)
                 ?: with(typeSystemContext) { superType.removeExactAnnotation() } else superType
 
         val result = internalAddSubtypeConstraint(mySubType, mySuperType, isFromNullabilityConstraint)
-        if (!subTypeHasExact && !superTypeHasExact) return result
+        if (!hasExact) return result
 
         val result2 = internalAddSubtypeConstraint(mySuperType, mySubType, isFromNullabilityConstraint)
 
@@ -92,9 +91,6 @@ abstract class AbstractTypeCheckerContextForConstraintSystem(override val typeSy
         val typeMarker = type.asSimpleType()?.asCapturedType() ?: return null
 
         val projection = typeMarker.typeConstructorProjection()
-        if (projection.isStarProjection()) return null
-
-
         return when (projection.getVariance()) {
             TypeVariance.IN -> if (!out) typeMarker.lowerType() ?: projection.getType() else null
             TypeVariance.OUT -> if (out) projection.getType() else null
