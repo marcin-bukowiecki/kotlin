@@ -85,7 +85,9 @@ internal fun Project.registerAssembleAppleFrameworkTask(framework: AbstractNativ
     val xcFrameworkSearchDir = XcodeEnvironment.frameworkSearchDir
 
     if (xcBuildType == null || xcTarget == null || xcFrameworkSearchDir == null) {
-        logger.info("$taskName requires 'CONFIGURATION' and 'SDK_NAME'")
+        logger.debug(
+            "Not registering $taskName, since not called from Xcode ('CONFIGURATION' and 'SDK_NAME' not provided)"
+        )
         return
     }
 
@@ -104,14 +106,16 @@ internal fun Project.registerAssembleAppleFrameworkTask(framework: AbstractNativ
 
 private const val UMBRELLA_ASSEMBLE_APPLE_FRAMEWORK = "assembleAppleFramework"
 internal fun Project.registerUmbrellaAssembleAppleFrameworkTask() {
-    logger.info(XcodeEnvironment.toString())
+    logger.debug(XcodeEnvironment.toString())
 
     val xcBuildType = XcodeEnvironment.buildType
     val xcTarget = XcodeEnvironment.target
     val xcFrameworkSearchDir = XcodeEnvironment.frameworkSearchDir
 
     if (xcBuildType == null || xcTarget == null || xcFrameworkSearchDir == null) {
-        logger.info("$UMBRELLA_ASSEMBLE_APPLE_FRAMEWORK requires 'CONFIGURATION' and 'SDK_NAME'")
+        logger.debug(
+            "Not registering $UMBRELLA_ASSEMBLE_APPLE_FRAMEWORK, since not called from Xcode ('CONFIGURATION' and 'SDK_NAME' not provided)"
+        )
         return
     }
 
@@ -143,7 +147,10 @@ internal fun Project.registerEmbedAndSignAppleFrameworkTask() {
     val frameworkSearchDir = XcodeEnvironment.frameworkSearchDir
 
     if (type == null || target == null || embeddedFrameworksDir == null || frameworkSearchDir == null) {
-        logger.info("$EMBED_AND_SIGN_APPLE_FRAMEWORK requires 'SDK_NAME', 'CONFIGURATION', 'TARGET_BUILD_DIR' and 'FRAMEWORKS_FOLDER_PATH'")
+        logger.debug(
+            "Not registering $EMBED_AND_SIGN_APPLE_FRAMEWORK, since not called from Xcode " +
+                    "('SDK_NAME', 'CONFIGURATION', 'TARGET_BUILD_DIR' and 'FRAMEWORKS_FOLDER_PATH' not provided)"
+        )
         return
     }
 
