@@ -20,7 +20,7 @@ import org.jetbrains.kotlin.konan.target.KonanTarget
 import org.jetbrains.kotlin.util.capitalizeDecapitalize.toLowerCaseAsciiOnly
 import java.io.File
 
-object XcodeEnvironment {
+private object XcodeEnvironment {
     val buildType: NativeBuildType?
         get() {
             val configuration = System.getenv("CONFIGURATION")?.toLowerCase() ?: return null
