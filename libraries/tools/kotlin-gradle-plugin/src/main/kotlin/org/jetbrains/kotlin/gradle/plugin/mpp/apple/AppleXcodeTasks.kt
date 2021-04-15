@@ -16,6 +16,8 @@ import org.jetbrains.kotlin.gradle.plugin.mpp.NativeBuildType
 import org.jetbrains.kotlin.gradle.plugin.mpp.enabledOnCurrentHost
 import org.jetbrains.kotlin.gradle.tasks.registerTask
 import org.jetbrains.kotlin.gradle.utils.lowerCamelCaseName
+import org.jetbrains.kotlin.konan.target.Architecture
+import org.jetbrains.kotlin.konan.target.HostManager
 import org.jetbrains.kotlin.konan.target.KonanTarget
 import org.jetbrains.kotlin.util.capitalizeDecapitalize.toLowerCaseAsciiOnly
 import java.io.File
@@ -36,7 +38,10 @@ private object XcodeEnvironment {
             val sdk = System.getenv("SDK_NAME") ?: return null
             return when {
                 sdk.startsWith("iphoneos") -> KonanTarget.IOS_ARM64
-                sdk.startsWith("iphonesimulator") -> KonanTarget.IOS_X64
+                sdk.startsWith("iphonesimulator") -> {
+                    if (HostManager.host.architecture == Architecture.ARM64) KonanTarget.IOS_SIMULATOR_ARM64
+                    else KonanTarget.IOS_X64
+                }
                 else -> throw IllegalArgumentException("Unexpected environment variable 'SDK_NAME': $sdk")
             }
         }
