@@ -489,7 +489,7 @@ constructor(
     }
 
     @Internal // Taken into account by getSources().
-    val intermediateLibrary: Provider<File> = project.provider { compilation.compileKotlinTask.outputFile }
+    val intermediateLibrary: Provider<File> = project.provider { compilation.compileKotlinTask.outputFile.get() }
 
     @InputFiles
     @SkipWhenEmpty
