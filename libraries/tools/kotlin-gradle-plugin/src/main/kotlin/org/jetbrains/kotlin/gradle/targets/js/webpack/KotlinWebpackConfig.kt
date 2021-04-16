@@ -178,7 +178,10 @@ data class KotlinWebpackConfig(
                       resolve: {
                         modules: [
                           "node_modules"
-                        ]
+                        ],
+                        fallback: {
+                            "crypto": false
+                        }
                       },
                       plugins: [],
                       module: {
