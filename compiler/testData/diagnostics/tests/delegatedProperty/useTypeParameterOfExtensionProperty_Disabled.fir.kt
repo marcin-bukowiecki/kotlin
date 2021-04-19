@@ -17,6 +17,6 @@ val <T : Any> List<T>.bar by Wrapper<T>()
 fun useString(s: String) {}
 
 fun main(listInt: List<Int>, listStr: List<String>) {
-    listInt.foo = 42
+    listInt.foo = <!ASSIGNMENT_TYPE_MISMATCH!>42<!>
     useString(listStr.foo) // CCE
 }
