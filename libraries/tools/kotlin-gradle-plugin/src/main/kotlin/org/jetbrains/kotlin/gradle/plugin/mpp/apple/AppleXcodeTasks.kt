@@ -39,8 +39,12 @@ private object XcodeEnvironment {
             return when {
                 sdk.startsWith("iphoneos") -> KonanTarget.IOS_ARM64
                 sdk.startsWith("iphonesimulator") -> {
-                    if (HostManager.host.architecture == Architecture.ARM64) KonanTarget.IOS_SIMULATOR_ARM64
-                    else KonanTarget.IOS_X64
+                    val hostArch = System.getenv("NATIVE_ARCH")
+                    when {
+                        hostArch.contains("x86_64") -> KonanTarget.IOS_X64
+                        hostArch.contains("arm64") -> KonanTarget.IOS_SIMULATOR_ARM64
+                        else -> throw IllegalArgumentException("Unexpected environment variable 'NATIVE_ARCH': $hostArch")
+                    }
                 }
                 else -> throw IllegalArgumentException("Unexpected environment variable 'SDK_NAME': $sdk")
             }
