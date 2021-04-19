@@ -8,6 +8,7 @@ package org.jetbrains.kotlin.idea.fir.low.level.api.api
 import org.jetbrains.kotlin.fir.FirElement
 import org.jetbrains.kotlin.fir.builder.RawFirFragmentForLazyBodiesBuilder
 import org.jetbrains.kotlin.fir.declarations.*
+import org.jetbrains.kotlin.fir.declarations.builder.FirDeclarationBuilder
 import org.jetbrains.kotlin.fir.declarations.builder.buildPropertyAccessorCopy
 import org.jetbrains.kotlin.fir.declarations.builder.buildRegularClassCopy
 import org.jetbrains.kotlin.fir.declarations.builder.buildSimpleFunctionCopy
@@ -60,9 +61,7 @@ object DeclarationCopyBuilder {
         return buildSimpleFunctionCopy(originalFunction) {
             body = builtFunction.body
             symbol = builtFunction.symbol
-            resolvePhase = minOf(originalFunction.resolvePhase, FirResolvePhase.DECLARATIONS)
-            source = builtFunction.source
-            session = state.rootModuleSession
+            initDeclaration(originalFunction, builtFunction, state)
         }.apply { reassignAllReturnTargets(builtFunction) }
     }
 
@@ -77,9 +76,7 @@ object DeclarationCopyBuilder {
             declarations.clear()
             declarations.addAll(builtClass.declarations)
             symbol = builtClass.symbol
-            resolvePhase = minOf(originalFirClass.resolvePhase, FirResolvePhase.DECLARATIONS)
-            source = builtClass.source
-            session = state.rootModuleSession
+            initDeclaration(originalFirClass, builtClass, state)
         }
     }
 
@@ -93,9 +90,7 @@ object DeclarationCopyBuilder {
         return org.jetbrains.kotlin.fir.declarations.builder.buildTypeAliasCopy(originalFirTypeAlias) {
             expandedTypeRef = builtTypeAlias.expandedTypeRef
             symbol = builtTypeAlias.symbol
-            resolvePhase = minOf(originalFirTypeAlias.resolvePhase, FirResolvePhase.DECLARATIONS)
-            source = builtTypeAlias.source
-            session = state.rootModuleSession
+            initDeclaration(originalFirTypeAlias, builtTypeAlias, state)
         }
     }
 
@@ -114,9 +109,7 @@ object DeclarationCopyBuilder {
             buildPropertyAccessorCopy(originalSetter) {
                 body = builtSetter.body
                 symbol = builtSetter.symbol
-                resolvePhase = minOf(builtSetter.resolvePhase, FirResolvePhase.DECLARATIONS)
-                source = builtSetter.source
-                session = state.rootModuleSession
+                initDeclaration(originalSetter, builtSetter, state)
             }.apply { reassignAllReturnTargets(builtSetter) }
         } else {
             builtSetter
@@ -129,10 +122,18 @@ object DeclarationCopyBuilder {
             getter = builtProperty.getter
             setter = copySetter
 
-            resolvePhase = minOf(originalProperty.resolvePhase, FirResolvePhase.DECLARATIONS)
-            source = builtProperty.source
-            session = state.rootModuleSession
+            initDeclaration(originalProperty, builtProperty, state)
         }
+    }
+
+    private fun FirDeclarationBuilder.initDeclaration(
+        originalDeclaration: FirDeclaration,
+        builtDeclaration: FirDeclaration,
+        state: FirModuleResolveState
+    ) {
+        resolvePhase = minOf(originalDeclaration.resolvePhase, FirResolvePhase.DECLARATIONS)
+        source = builtDeclaration.source
+        session = state.rootModuleSession
     }
 
     internal inline fun <reified T : FirDeclaration> createCopy(
