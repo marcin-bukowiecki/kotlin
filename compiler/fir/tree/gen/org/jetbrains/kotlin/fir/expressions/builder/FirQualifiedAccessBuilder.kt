@@ -6,8 +6,8 @@
 package org.jetbrains.kotlin.fir.expressions.builder
 
 import org.jetbrains.kotlin.fir.FirSourceElement
-import org.jetbrains.kotlin.fir.builder.BaseElementBuilder
 import org.jetbrains.kotlin.fir.builder.FirBuilderDsl
+import org.jetbrains.kotlin.fir.builder.FirElementBuilder
 import org.jetbrains.kotlin.fir.expressions.FirAnnotationCall
 import org.jetbrains.kotlin.fir.expressions.FirExpression
 import org.jetbrains.kotlin.fir.expressions.FirQualifiedAccess
@@ -20,7 +20,7 @@ import org.jetbrains.kotlin.fir.visitors.*
  */
 
 @FirBuilderDsl
-interface FirQualifiedAccessBuilder : BaseElementBuilder {
+interface FirQualifiedAccessBuilder : FirElementBuilder {
     abstract override var source: FirSourceElement?
     abstract val annotations: MutableList<FirAnnotationCall>
     abstract val typeArguments: MutableList<FirTypeProjection>

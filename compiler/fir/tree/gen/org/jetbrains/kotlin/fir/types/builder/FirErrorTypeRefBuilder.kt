@@ -7,9 +7,9 @@ package org.jetbrains.kotlin.fir.types.builder
 
 import kotlin.contracts.*
 import org.jetbrains.kotlin.fir.FirSourceElement
-import org.jetbrains.kotlin.fir.builder.BaseElementBuilder
 import org.jetbrains.kotlin.fir.builder.FirAnnotationContainerBuilder
 import org.jetbrains.kotlin.fir.builder.FirBuilderDsl
+import org.jetbrains.kotlin.fir.builder.FirElementBuilder
 import org.jetbrains.kotlin.fir.diagnostics.ConeDiagnostic
 import org.jetbrains.kotlin.fir.expressions.FirAnnotationCall
 import org.jetbrains.kotlin.fir.types.ConeClassErrorType
@@ -25,7 +25,7 @@ import org.jetbrains.kotlin.fir.visitors.*
  */
 
 @FirBuilderDsl
-class FirErrorTypeRefBuilder : BaseElementBuilder, FirAnnotationContainerBuilder {
+class FirErrorTypeRefBuilder : FirElementBuilder, FirAnnotationContainerBuilder {
     override var source: FirSourceElement? = null
     var delegatedTypeRef: FirTypeRef? = null
     lateinit var diagnostic: ConeDiagnostic

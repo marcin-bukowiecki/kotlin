@@ -5,11 +5,14 @@
 
 package org.jetbrains.kotlin.fir.declarations.builder
 
+import org.jetbrains.kotlin.fir.FirSession
 import org.jetbrains.kotlin.fir.FirSourceElement
 import org.jetbrains.kotlin.fir.builder.FirBuilderDsl
 import org.jetbrains.kotlin.fir.builder.FirElementBuilder
-import org.jetbrains.kotlin.fir.declarations.FirTypeParameter
-import org.jetbrains.kotlin.fir.declarations.FirTypeParametersOwner
+import org.jetbrains.kotlin.fir.declarations.FirDeclaration
+import org.jetbrains.kotlin.fir.declarations.FirDeclarationAttributes
+import org.jetbrains.kotlin.fir.declarations.FirDeclarationOrigin
+import org.jetbrains.kotlin.fir.declarations.FirResolvePhase
 import org.jetbrains.kotlin.fir.visitors.*
 
 /*
@@ -18,9 +21,11 @@ import org.jetbrains.kotlin.fir.visitors.*
  */
 
 @FirBuilderDsl
-interface FirTypeParametersOwnerBuilder : FirElementBuilder {
+interface FirDeclarationBuilder : FirElementBuilder {
     abstract override var source: FirSourceElement?
-    abstract val typeParameters: MutableList<FirTypeParameter>
-
-    override fun build(): FirTypeParametersOwner
+    abstract var session: FirSession
+    abstract var resolvePhase: FirResolvePhase
+    abstract var origin: FirDeclarationOrigin
+    abstract var attributes: FirDeclarationAttributes
+    override fun build(): FirDeclaration
 }

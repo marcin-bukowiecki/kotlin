@@ -16,6 +16,10 @@ object BuilderConfigurator : AbstractBuilderConfigurator<FirTreeBuilder>(FirTree
             fields from AbstractFirTreeBuilder.baseFirElement
         }
 
+        val declarationBuilder by builder {
+            fields from declaration
+        }
+
         val annotationContainerBuilder by builder {
             fields from annotationContainer
         }
@@ -33,6 +37,7 @@ object BuilderConfigurator : AbstractBuilderConfigurator<FirTreeBuilder>(FirTree
         }
 
         val classBuilder by builder {
+            parents += declarationBuilder
             parents += annotationContainerBuilder
             fields from klass without listOf("symbol", "resolvePhase")
         }
@@ -58,6 +63,7 @@ object BuilderConfigurator : AbstractBuilderConfigurator<FirTreeBuilder>(FirTree
         }
 
         val functionBuilder by builder {
+            parents += declarationBuilder
             parents += annotationContainerBuilder
             fields from function without listOf("symbol", "resolvePhase", "controlFlowGraphReference", "receiverTypeRef", "typeParameters")
         }
@@ -91,15 +97,18 @@ object BuilderConfigurator : AbstractBuilderConfigurator<FirTreeBuilder>(FirTree
         }
 
         builder(field) {
+            parents += declarationBuilder
             default("resolvePhase", "FirResolvePhase.DECLARATIONS")
             openBuilder()
         }
 
         builder(anonymousObject) {
+            parents += declarationBuilder
             parents += classBuilder
         }
 
         builder(typeAlias) {
+            parents += declarationBuilder
             parents += typeParametersOwnerBuilder
             withCopy()
         }
@@ -185,6 +194,7 @@ object BuilderConfigurator : AbstractBuilderConfigurator<FirTreeBuilder>(FirTree
         }
 
         builder(property) {
+            parents += declarationBuilder
             parents += typeParametersOwnerBuilder
             defaultNull("getter", "setter", "containerSource", "delegateFieldSymbol")
             default("resolvePhase", "FirResolvePhase.RAW_FIR")
@@ -294,6 +304,7 @@ object BuilderConfigurator : AbstractBuilderConfigurator<FirTreeBuilder>(FirTree
         }
 
         builder(anonymousInitializer) {
+            parents += declarationBuilder
             default("symbol", "FirAnonymousInitializerSymbol()")
         }
 
