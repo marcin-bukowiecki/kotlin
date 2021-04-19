@@ -179,8 +179,14 @@ data class KotlinWebpackConfig(
                         modules: [
                           "node_modules"
                         ],
+                        ${
+                        webpackMajorVersion.choose(
+                        """
                         fallback: {
                             "crypto": false
+                        },""",
+                            ""
+                        )
                         }
                       },
                       plugins: [],
