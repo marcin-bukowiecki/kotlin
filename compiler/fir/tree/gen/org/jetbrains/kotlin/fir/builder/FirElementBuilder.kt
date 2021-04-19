@@ -5,11 +5,9 @@
 
 package org.jetbrains.kotlin.fir.builder
 
-import org.jetbrains.kotlin.fir.FirAnnotationContainer
+import org.jetbrains.kotlin.fir.FirElement
 import org.jetbrains.kotlin.fir.FirSourceElement
-import org.jetbrains.kotlin.fir.builder.BaseElementBuilder
 import org.jetbrains.kotlin.fir.builder.FirBuilderDsl
-import org.jetbrains.kotlin.fir.expressions.FirAnnotationCall
 import org.jetbrains.kotlin.fir.visitors.*
 
 /*
@@ -18,9 +16,7 @@ import org.jetbrains.kotlin.fir.visitors.*
  */
 
 @FirBuilderDsl
-interface FirAnnotationContainerBuilder : BaseElementBuilder {
-    abstract override var source: FirSourceElement?
-    abstract val annotations: MutableList<FirAnnotationCall>
-
-    override fun build(): FirAnnotationContainer
+interface FirElementBuilder {
+    abstract var source: FirSourceElement?
+    fun build(): FirElement
 }

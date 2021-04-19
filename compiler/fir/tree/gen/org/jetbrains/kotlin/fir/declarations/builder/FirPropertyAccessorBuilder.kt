@@ -10,6 +10,7 @@ import org.jetbrains.kotlin.descriptors.Modality
 import org.jetbrains.kotlin.fir.FirImplementationDetail
 import org.jetbrains.kotlin.fir.FirSession
 import org.jetbrains.kotlin.fir.FirSourceElement
+import org.jetbrains.kotlin.fir.builder.BaseElementBuilder
 import org.jetbrains.kotlin.fir.builder.FirAnnotationContainerBuilder
 import org.jetbrains.kotlin.fir.builder.FirBuilderDsl
 import org.jetbrains.kotlin.fir.contracts.FirContractDescription
@@ -38,7 +39,7 @@ import org.jetbrains.kotlin.serialization.deserialization.descriptors.Deserializ
  */
 
 @FirBuilderDsl
-class FirPropertyAccessorBuilder : FirFunctionBuilder, FirAnnotationContainerBuilder {
+class FirPropertyAccessorBuilder : BaseElementBuilder, FirFunctionBuilder, FirAnnotationContainerBuilder {
     override var source: FirSourceElement? = null
     override lateinit var session: FirSession
     var resolvePhase: FirResolvePhase = FirResolvePhase.RAW_FIR

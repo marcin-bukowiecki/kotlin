@@ -6,11 +6,16 @@
 package org.jetbrains.kotlin.fir.tree.generator
 
 import org.jetbrains.kotlin.fir.tree.generator.context.AbstractBuilderConfigurator
+import org.jetbrains.kotlin.fir.tree.generator.context.AbstractFirTreeBuilder
 import org.jetbrains.kotlin.fir.tree.generator.model.*
 import org.jetbrains.kotlin.fir.tree.generator.util.traverseParents
 
 object BuilderConfigurator : AbstractBuilderConfigurator<FirTreeBuilder>(FirTreeBuilder) {
     fun configureBuilders() = with(firTreeBuilder) {
+        baseBuilder("FirElementBuilder") {
+            fields from AbstractFirTreeBuilder.baseFirElement
+        }
+
         val annotationContainerBuilder by builder {
             fields from annotationContainer
         }

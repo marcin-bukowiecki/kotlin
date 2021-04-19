@@ -6,6 +6,7 @@
 package org.jetbrains.kotlin.fir.expressions.builder
 
 import org.jetbrains.kotlin.fir.FirSourceElement
+import org.jetbrains.kotlin.fir.builder.BaseElementBuilder
 import org.jetbrains.kotlin.fir.builder.FirBuilderDsl
 import org.jetbrains.kotlin.fir.expressions.FirAnnotationCall
 import org.jetbrains.kotlin.fir.expressions.FirResolvedQualifier
@@ -22,8 +23,8 @@ import org.jetbrains.kotlin.name.FqName
  */
 
 @FirBuilderDsl
-interface FirAbstractResolvedQualifierBuilder {
-    abstract var source: FirSourceElement?
+interface FirAbstractResolvedQualifierBuilder : BaseElementBuilder {
+    abstract override var source: FirSourceElement?
     abstract var typeRef: FirTypeRef
     abstract val annotations: MutableList<FirAnnotationCall>
     abstract var packageFqName: FqName
@@ -33,5 +34,5 @@ interface FirAbstractResolvedQualifierBuilder {
     abstract var isNullableLHSForCallableReference: Boolean
     abstract val typeArguments: MutableList<FirTypeProjection>
 
-    fun build(): FirResolvedQualifier
+    override fun build(): FirResolvedQualifier
 }

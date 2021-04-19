@@ -8,6 +8,7 @@ package org.jetbrains.kotlin.fir.declarations.builder
 import kotlin.contracts.*
 import org.jetbrains.kotlin.fir.FirSession
 import org.jetbrains.kotlin.fir.FirSourceElement
+import org.jetbrains.kotlin.fir.builder.BaseElementBuilder
 import org.jetbrains.kotlin.fir.builder.FirBuilderDsl
 import org.jetbrains.kotlin.fir.declarations.FirAnonymousInitializer
 import org.jetbrains.kotlin.fir.declarations.FirDeclarationAttributes
@@ -25,8 +26,8 @@ import org.jetbrains.kotlin.fir.visitors.*
  */
 
 @FirBuilderDsl
-class FirAnonymousInitializerBuilder {
-    var source: FirSourceElement? = null
+class FirAnonymousInitializerBuilder : BaseElementBuilder {
+    override var source: FirSourceElement? = null
     lateinit var session: FirSession
     var resolvePhase: FirResolvePhase = FirResolvePhase.RAW_FIR
     lateinit var origin: FirDeclarationOrigin
@@ -34,7 +35,7 @@ class FirAnonymousInitializerBuilder {
     var body: FirBlock? = null
     var symbol: FirAnonymousInitializerSymbol = FirAnonymousInitializerSymbol()
 
-    fun build(): FirAnonymousInitializer {
+    override fun build(): FirAnonymousInitializer {
         return FirAnonymousInitializerImpl(
             source,
             session,

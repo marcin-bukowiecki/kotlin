@@ -7,6 +7,7 @@ package org.jetbrains.kotlin.fir.types.builder
 
 import kotlin.contracts.*
 import org.jetbrains.kotlin.fir.FirSourceElement
+import org.jetbrains.kotlin.fir.builder.BaseElementBuilder
 import org.jetbrains.kotlin.fir.builder.FirAnnotationContainerBuilder
 import org.jetbrains.kotlin.fir.builder.FirBuilderDsl
 import org.jetbrains.kotlin.fir.declarations.FirValueParameter
@@ -22,7 +23,7 @@ import org.jetbrains.kotlin.fir.visitors.*
  */
 
 @FirBuilderDsl
-class FirFunctionTypeRefBuilder : FirAnnotationContainerBuilder {
+class FirFunctionTypeRefBuilder : BaseElementBuilder, FirAnnotationContainerBuilder {
     override var source: FirSourceElement? = null
     override val annotations: MutableList<FirAnnotationCall> = mutableListOf()
     var isMarkedNullable: Boolean by kotlin.properties.Delegates.notNull<Boolean>()

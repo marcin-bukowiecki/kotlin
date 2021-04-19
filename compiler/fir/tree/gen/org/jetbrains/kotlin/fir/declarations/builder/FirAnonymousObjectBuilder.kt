@@ -9,6 +9,7 @@ import kotlin.contracts.*
 import org.jetbrains.kotlin.descriptors.ClassKind
 import org.jetbrains.kotlin.fir.FirSession
 import org.jetbrains.kotlin.fir.FirSourceElement
+import org.jetbrains.kotlin.fir.builder.BaseElementBuilder
 import org.jetbrains.kotlin.fir.builder.FirAnnotationContainerBuilder
 import org.jetbrains.kotlin.fir.builder.FirBuilderDsl
 import org.jetbrains.kotlin.fir.declarations.FirAnonymousObject
@@ -34,7 +35,7 @@ import org.jetbrains.kotlin.fir.visitors.*
  */
 
 @FirBuilderDsl
-class FirAnonymousObjectBuilder : FirClassBuilder, FirAnnotationContainerBuilder, FirExpressionBuilder {
+class FirAnonymousObjectBuilder : BaseElementBuilder, FirClassBuilder, FirAnnotationContainerBuilder, FirExpressionBuilder {
     override var source: FirSourceElement? = null
     override lateinit var session: FirSession
     var resolvePhase: FirResolvePhase = FirResolvePhase.RAW_FIR

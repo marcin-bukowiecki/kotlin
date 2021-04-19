@@ -111,7 +111,7 @@ abstract class AbstractBuilderConfigurator<T : AbstractFirTreeBuilder>(val firTr
         }
 
         val fields = Fields()
-        val parents: MutableList<IntermediateBuilder> get() = builder.parents
+        val parents: MutableSet<IntermediateBuilder> get() = builder.parents
 
         var materializedElement: Element
             get() = throw IllegalArgumentException()
@@ -134,6 +134,7 @@ abstract class AbstractBuilderConfigurator<T : AbstractFirTreeBuilder>(val firTr
             val name = name ?: "Fir${prop.name.replaceFirstChar(Char::uppercaseChar)}"
             builder = IntermediateBuilder(name).apply {
                 firTreeBuilder.intermediateBuilders += this
+                baseBuilder?.let { base -> parents += base }
                 IntermediateBuilderConfigurationContext(this).block()
             }
             return DummyDelegate(builder)
@@ -147,7 +148,7 @@ abstract class AbstractBuilderConfigurator<T : AbstractFirTreeBuilder>(val firTr
     }
 
     inner class LeafBuilderConfigurationContext(override val builder: LeafBuilder) : BuilderConfigurationContext() {
-        val parents: MutableList<IntermediateBuilder> get() = builder.parents
+        val parents: MutableSet<IntermediateBuilder> get() = builder.parents
 
         fun openBuilder() {
             builder.isOpen = true
@@ -158,6 +159,13 @@ abstract class AbstractBuilderConfigurator<T : AbstractFirTreeBuilder>(val firTr
         }
     }
 
+    private var baseBuilder: IntermediateBuilder? = null
+
+    fun baseBuilder(name: String, block: IntermediateBuilderConfigurationContext.() -> Unit) {
+        val builder by builder(name, block)
+        baseBuilder = builder
+    }
+
     fun builder(name: String? = null, block: IntermediateBuilderConfigurationContext.() -> Unit): IntermediateBuilderDelegateProvider {
         return IntermediateBuilderDelegateProvider(name, block)
     }
@@ -166,7 +174,11 @@ abstract class AbstractBuilderConfigurator<T : AbstractFirTreeBuilder>(val firTr
         val implementation = element.extractImplementation(type)
         val builder = implementation.builder
         requireNotNull(builder)
-        LeafBuilderConfigurationContext(builder).apply(init)
+        LeafBuilderConfigurationContext(builder).apply {
+            baseBuilder?.let { base ->
+                parents += base
+            }
+        }.apply(init)
     }
 
     private fun Element.extractImplementation(type: String?): Implementation {

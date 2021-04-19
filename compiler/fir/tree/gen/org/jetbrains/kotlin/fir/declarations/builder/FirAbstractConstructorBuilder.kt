@@ -7,6 +7,7 @@ package org.jetbrains.kotlin.fir.declarations.builder
 
 import org.jetbrains.kotlin.fir.FirSession
 import org.jetbrains.kotlin.fir.FirSourceElement
+import org.jetbrains.kotlin.fir.builder.BaseElementBuilder
 import org.jetbrains.kotlin.fir.builder.FirBuilderDsl
 import org.jetbrains.kotlin.fir.declarations.FirConstructor
 import org.jetbrains.kotlin.fir.declarations.FirDeclarationAttributes
@@ -32,7 +33,7 @@ import org.jetbrains.kotlin.serialization.deserialization.descriptors.Deserializ
  */
 
 @FirBuilderDsl
-interface FirAbstractConstructorBuilder : FirFunctionBuilder {
+interface FirAbstractConstructorBuilder : BaseElementBuilder, FirFunctionBuilder {
     abstract override var source: FirSourceElement?
     abstract override val annotations: MutableList<FirAnnotationCall>
     abstract override var session: FirSession

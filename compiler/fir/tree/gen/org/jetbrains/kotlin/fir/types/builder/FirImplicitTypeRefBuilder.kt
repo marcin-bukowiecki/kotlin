@@ -7,6 +7,7 @@ package org.jetbrains.kotlin.fir.types.builder
 
 import kotlin.contracts.*
 import org.jetbrains.kotlin.fir.FirSourceElement
+import org.jetbrains.kotlin.fir.builder.BaseElementBuilder
 import org.jetbrains.kotlin.fir.builder.FirBuilderDsl
 import org.jetbrains.kotlin.fir.expressions.FirAnnotationCall
 import org.jetbrains.kotlin.fir.types.FirImplicitTypeRef
@@ -19,10 +20,10 @@ import org.jetbrains.kotlin.fir.visitors.*
  */
 
 @FirBuilderDsl
-class FirImplicitTypeRefBuilder {
-    var source: FirSourceElement? = null
+class FirImplicitTypeRefBuilder : BaseElementBuilder {
+    override var source: FirSourceElement? = null
 
-    fun build(): FirImplicitTypeRef {
+    override fun build(): FirImplicitTypeRef {
         return FirImplicitTypeRefImpl(
             source,
         )

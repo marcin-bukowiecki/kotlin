@@ -9,6 +9,7 @@ import kotlin.contracts.*
 import org.jetbrains.kotlin.fir.FirImplementationDetail
 import org.jetbrains.kotlin.fir.FirSession
 import org.jetbrains.kotlin.fir.FirSourceElement
+import org.jetbrains.kotlin.fir.builder.BaseElementBuilder
 import org.jetbrains.kotlin.fir.builder.FirAnnotationContainerBuilder
 import org.jetbrains.kotlin.fir.builder.FirBuilderDsl
 import org.jetbrains.kotlin.fir.declarations.FirDeclarationAttributes
@@ -35,7 +36,7 @@ import org.jetbrains.kotlin.serialization.deserialization.descriptors.Deserializ
  */
 
 @FirBuilderDsl
-open class FirFieldBuilder : FirAnnotationContainerBuilder {
+open class FirFieldBuilder : BaseElementBuilder, FirAnnotationContainerBuilder {
     override var source: FirSourceElement? = null
     open lateinit var session: FirSession
     open var resolvePhase: FirResolvePhase = FirResolvePhase.RAW_FIR

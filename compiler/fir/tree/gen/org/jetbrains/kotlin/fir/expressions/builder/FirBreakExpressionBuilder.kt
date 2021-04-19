@@ -9,6 +9,7 @@ import kotlin.contracts.*
 import org.jetbrains.kotlin.fir.FirFakeSourceElementKind
 import org.jetbrains.kotlin.fir.FirSourceElement
 import org.jetbrains.kotlin.fir.FirTarget
+import org.jetbrains.kotlin.fir.builder.BaseElementBuilder
 import org.jetbrains.kotlin.fir.builder.FirAnnotationContainerBuilder
 import org.jetbrains.kotlin.fir.builder.FirBuilderDsl
 import org.jetbrains.kotlin.fir.expressions.FirAnnotationCall
@@ -28,7 +29,7 @@ import org.jetbrains.kotlin.fir.visitors.*
  */
 
 @FirBuilderDsl
-class FirBreakExpressionBuilder : FirLoopJumpBuilder, FirAnnotationContainerBuilder, FirExpressionBuilder {
+class FirBreakExpressionBuilder : BaseElementBuilder, FirLoopJumpBuilder, FirAnnotationContainerBuilder, FirExpressionBuilder {
     override var source: FirSourceElement? = null
     override val annotations: MutableList<FirAnnotationCall> = mutableListOf()
     override lateinit var target: FirTarget<FirLoop>

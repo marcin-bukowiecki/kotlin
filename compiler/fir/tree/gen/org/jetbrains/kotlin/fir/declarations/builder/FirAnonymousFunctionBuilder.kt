@@ -10,6 +10,7 @@ import org.jetbrains.kotlin.contracts.description.EventOccurrencesRange
 import org.jetbrains.kotlin.fir.FirLabel
 import org.jetbrains.kotlin.fir.FirSession
 import org.jetbrains.kotlin.fir.FirSourceElement
+import org.jetbrains.kotlin.fir.builder.BaseElementBuilder
 import org.jetbrains.kotlin.fir.builder.FirAnnotationContainerBuilder
 import org.jetbrains.kotlin.fir.builder.FirBuilderDsl
 import org.jetbrains.kotlin.fir.declarations.FirAnonymousFunction
@@ -36,7 +37,7 @@ import org.jetbrains.kotlin.fir.visitors.*
  */
 
 @FirBuilderDsl
-class FirAnonymousFunctionBuilder : FirFunctionBuilder, FirAnnotationContainerBuilder, FirExpressionBuilder {
+class FirAnonymousFunctionBuilder : BaseElementBuilder, FirFunctionBuilder, FirAnnotationContainerBuilder, FirExpressionBuilder {
     override var source: FirSourceElement? = null
     override lateinit var session: FirSession
     override lateinit var origin: FirDeclarationOrigin
