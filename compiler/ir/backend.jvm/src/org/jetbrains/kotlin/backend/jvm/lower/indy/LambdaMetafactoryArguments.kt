@@ -79,6 +79,12 @@ internal class LambdaMetafactoryArgumentsBuilder(
             return null
         }
 
+        val implFunParent = implFun.parent
+        if (implFunParent is IrClass && implFunParent.origin == IrDeclarationOrigin.JVM_MULTIFILE_CLASS) {
+            // Multifile class parts are not accessible.
+            return null
+        }
+
         // Can't use JDK LambdaMetafactory for annotated lambdas.
         // JDK LambdaMetafactory doesn't copy annotations from implementation method to an instance method in a
         // corresponding synthetic class, which doesn't look like a binary compatible change.
