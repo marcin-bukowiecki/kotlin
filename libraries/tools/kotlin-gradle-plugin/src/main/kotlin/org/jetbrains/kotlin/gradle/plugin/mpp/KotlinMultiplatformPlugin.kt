@@ -27,7 +27,6 @@ import org.jetbrains.kotlin.gradle.internal.customizeKotlinDependencies
 import org.jetbrains.kotlin.gradle.plugin.*
 import org.jetbrains.kotlin.gradle.plugin.mpp.KotlinMultiplatformPlugin.Companion.sourceSetFreeCompilerArgsPropertyName
 import org.jetbrains.kotlin.gradle.plugin.mpp.apple.registerEmbedAndSignAppleFrameworkTask
-import org.jetbrains.kotlin.gradle.plugin.mpp.apple.registerUmbrellaAssembleAppleFrameworkTask
 import org.jetbrains.kotlin.gradle.plugin.sources.*
 import org.jetbrains.kotlin.gradle.plugin.sources.DefaultLanguageSettingsBuilder
 import org.jetbrains.kotlin.gradle.plugin.statistics.KotlinBuildStatsService
@@ -109,7 +108,6 @@ class KotlinMultiplatformPlugin(
 
         exportProjectStructureMetadataForOtherBuilds(project)
 
-        project.registerUmbrellaAssembleAppleFrameworkTask()
         project.registerEmbedAndSignAppleFrameworkTask()
 
         SingleActionPerBuild.run(project.rootProject, "cleanup-processed-metadata") {

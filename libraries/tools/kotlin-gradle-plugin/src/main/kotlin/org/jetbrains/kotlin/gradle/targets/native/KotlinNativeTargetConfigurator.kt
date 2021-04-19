@@ -455,7 +455,9 @@ open class KotlinNativeTargetConfigurator<T : KotlinNativeTarget>(
                 attributes.attribute(USAGE_ATTRIBUTE, KotlinUsages.consumerApiUsage(target))
                 description = "Dependenceis to be exported in framework ${framework.name} for target ${target.targetName}"
             }
-            project.registerAssembleAppleFrameworkTask(framework)
+            if (framework is Framework) {
+                project.registerAssembleAppleFrameworkTask(framework)
+            }
         }
     }
 
