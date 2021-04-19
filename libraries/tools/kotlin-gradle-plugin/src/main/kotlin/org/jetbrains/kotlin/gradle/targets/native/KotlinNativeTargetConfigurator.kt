@@ -342,6 +342,10 @@ open class KotlinNativeTargetConfigurator<T : KotlinNativeTarget>(
         configureFrameworkExport(target)
         configureCInterops(target)
 
+        if (target.konanTarget.family.isAppleFamily) {
+            registerAssembleAppleFrameworkTasks(target)
+        }
+
         if (PropertiesProvider(target.project).ignoreIncorrectNativeDependencies != true) {
             warnAboutIncorrectDependencies(target)
         }
@@ -455,9 +459,13 @@ open class KotlinNativeTargetConfigurator<T : KotlinNativeTarget>(
                 attributes.attribute(USAGE_ATTRIBUTE, KotlinUsages.consumerApiUsage(target))
                 description = "Dependenceis to be exported in framework ${framework.name} for target ${target.targetName}"
             }
-            if (framework is Framework) {
-                project.registerAssembleAppleFrameworkTask(framework)
-            }
+        }
+    }
+
+    private fun registerAssembleAppleFrameworkTasks(target: KotlinNativeTarget) {
+        val project = target.project
+        target.binaries.withType(Framework::class.java).all { framework ->
+            project.registerAssembleAppleFrameworkTask(framework)
         }
     }
 
