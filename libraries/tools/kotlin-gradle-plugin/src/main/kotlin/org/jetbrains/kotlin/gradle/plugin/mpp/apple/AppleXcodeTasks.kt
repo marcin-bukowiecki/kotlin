@@ -105,7 +105,13 @@ internal fun Project.registerAssembleAppleFrameworkTask(framework: Framework) {
 
     val frameworkBuildType = framework.buildType
     val frameworkTarget = framework.target
-    val frameworkTaskName = frameworkTarget.assembleAppleFrameworkTaskName(frameworkBuildType)
+    val frameworkTaskName = lowerCamelCaseName(
+        "assemble",
+        frameworkBuildType.name.toLowerCaseAsciiOnly(),
+        "AppleFramework",
+        framework.baseName,
+        frameworkTarget.name
+    )
 
     val envBuildType = XcodeEnvironment.buildType
     val envTarget = XcodeEnvironment.target
@@ -192,6 +198,3 @@ internal fun Project.registerEmbedAndSignAppleFrameworkTask() {
 
 private fun Project.appleFrameworkDir(frameworkSearchDir: File) =
     buildDir.resolve("xcode-frameworks").resolve(frameworkSearchDir)
-
-private fun KotlinNativeTarget.assembleAppleFrameworkTaskName(buildType: NativeBuildType) =
-    lowerCamelCaseName("assemble", buildType.name.toLowerCaseAsciiOnly(), "AppleFramework", name)
