@@ -17,6 +17,7 @@
 package org.jetbrains.kotlin.utils.fileUtils
 
 import java.io.File
+import java.nio.file.Paths
 
 fun File.withReplacedExtensionOrNull(oldExt: String, newExt: String): File? {
     if (name.endsWith(oldExt)) {
@@ -37,14 +38,7 @@ fun File.withReplacedExtensionOrNull(oldExt: String, newExt: String): File? {
  * If this file does not belong to the [base] directory, it is returned unchanged.
  */
 fun File.descendantRelativeTo(base: File): File {
-    val prefix = base.canonicalPath
-    val answer = this.canonicalPath
-    return if (answer.startsWith(prefix)) {
-        val prefixSize = prefix.length
-        if (answer.length > prefixSize) {
-            File(answer.substring(prefixSize + 1))
-        } else File("")
-    } else {
-        this
-    }
+    val prefix = Paths.get(base.canonicalFile.toURI())
+    val cwd = Paths.get(this.canonicalFile.toURI())
+    return if (cwd.startsWith(prefix)) prefix.relativize(cwd).toFile() else this
 }
