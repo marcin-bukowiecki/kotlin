@@ -135,7 +135,6 @@ internal fun Project.registerUmbrellaAssembleAppleFrameworkTask() {
 
         task.enabled = taskNames.isNotEmpty()
         task.dependsOn(taskNames.toTypedArray())
-        tasks.getByName("assemble").dependsOn(task)
     }
 }
 
