@@ -101,31 +101,31 @@ private object XcodeEnvironment {
 internal fun Project.registerAssembleAppleFrameworkTask(framework: AbstractNativeLibrary) {
     if (!framework.konanTarget.family.isAppleFamily) return
 
-    val type = framework.buildType
-    val target = framework.target
-    val taskName = target.assembleAppleFrameworkTaskName(type)
+    val frameworkBuildType = framework.buildType
+    val frameworkTarget = framework.target
+    val frameworkTaskName = frameworkTarget.assembleAppleFrameworkTaskName(frameworkBuildType)
 
-    val xcBuildType = XcodeEnvironment.buildType
-    val xcTarget = XcodeEnvironment.target
-    val xcFrameworkSearchDir = XcodeEnvironment.frameworkSearchDir
+    val envBuildType = XcodeEnvironment.buildType
+    val envTarget = XcodeEnvironment.target
+    val envFrameworkSearchDir = XcodeEnvironment.frameworkSearchDir
 
-    if (xcBuildType == null || xcTarget == null || xcFrameworkSearchDir == null) {
+    if (envBuildType == null || envTarget == null || envFrameworkSearchDir == null) {
         logger.debug(
-            "Not registering $taskName, since not called from Xcode ('CONFIGURATION' and 'SDK_NAME' not provided)"
+            "Not registering $frameworkTaskName, since not called from Xcode ('CONFIGURATION' and 'SDK_NAME' not provided)"
         )
         return
     }
 
-    if (type != XcodeEnvironment.buildType || target.konanTarget != XcodeEnvironment.target) return
+    if (frameworkBuildType != envBuildType || frameworkTarget.konanTarget != envTarget) return
 
-    registerTask<Copy>(taskName) { task ->
+    registerTask<Copy>(frameworkTaskName) { task ->
         task.group = BasePlugin.BUILD_GROUP
-        task.description = "Packs $type ${target.name} framework for Xcode"
+        task.description = "Packs $frameworkBuildType ${frameworkTarget.name} framework for Xcode"
         task.enabled = framework.konanTarget.enabledOnCurrentHost
 
         task.dependsOn(framework.linkTaskName)
         task.from(framework.outputDirectory)
-        task.into(appleFrameworkDir(xcFrameworkSearchDir))
+        task.into(appleFrameworkDir(envFrameworkSearchDir))
     }
 }
 
@@ -133,11 +133,11 @@ private const val UMBRELLA_ASSEMBLE_APPLE_FRAMEWORK = "assembleAppleFramework"
 internal fun Project.registerUmbrellaAssembleAppleFrameworkTask() {
     logger.debug(XcodeEnvironment.toString())
 
-    val xcBuildType = XcodeEnvironment.buildType
-    val xcTarget = XcodeEnvironment.target
-    val xcFrameworkSearchDir = XcodeEnvironment.frameworkSearchDir
+    val envBuildType = XcodeEnvironment.buildType
+    val envTarget = XcodeEnvironment.target
+    val envFrameworkSearchDir = XcodeEnvironment.frameworkSearchDir
 
-    if (xcBuildType == null || xcTarget == null || xcFrameworkSearchDir == null) {
+    if (envBuildType == null || envTarget == null || envFrameworkSearchDir == null) {
         logger.debug(
             "Not registering $UMBRELLA_ASSEMBLE_APPLE_FRAMEWORK, since not called from Xcode ('CONFIGURATION' and 'SDK_NAME' not provided)"
         )
@@ -155,8 +155,8 @@ internal fun Project.registerUmbrellaAssembleAppleFrameworkTask() {
         if (appleFrameworks.isNullOrEmpty()) return@registerTask
 
         val taskNames = appleFrameworks
-            .filter { framework -> framework.konanTarget == xcTarget }
-            .map { framework -> framework.assembleAppleFrameworkTaskName(xcBuildType) }
+            .filter { framework -> framework.konanTarget == envTarget }
+            .map { framework -> framework.assembleAppleFrameworkTaskName(envBuildType) }
 
         task.enabled = taskNames.isNotEmpty()
         task.dependsOn(taskNames.toTypedArray())
