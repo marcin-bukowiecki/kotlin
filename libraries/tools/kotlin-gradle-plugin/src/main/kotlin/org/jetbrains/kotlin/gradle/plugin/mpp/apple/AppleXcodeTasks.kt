@@ -48,9 +48,9 @@ private object XcodeEnvironment {
 
             val hostArch = System.getenv("NATIVE_ARCH")
             val hostArchitecture = when {
-                hostArch.contains("x86_64") -> Architecture.X64
-                hostArch.contains("arm64") -> Architecture.ARM64
-                else -> throw IllegalArgumentException("Unexpected environment variable 'NATIVE_ARCH': $hostArch")
+                hostArch?.contains("x86_64") == true -> Architecture.X64
+                hostArch?.contains("arm64") == true -> Architecture.ARM64
+                else -> HostManager.host.architecture
             }
 
             return when {
