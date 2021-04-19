@@ -24,12 +24,20 @@ import java.io.File
 private object XcodeEnvironment {
     val buildType: NativeBuildType?
         get() {
-            val configuration = System.getenv("CONFIGURATION")?.toLowerCase() ?: return null
-            return when (configuration) {
+            val configuration = System.getenv("CONFIGURATION") ?: return null
+
+            fun String.toNativeBuildType() = when (this.toLowerCase()) {
                 "debug" -> NativeBuildType.DEBUG
                 "release" -> NativeBuildType.RELEASE
-                else -> throw IllegalArgumentException("Unexpected environment variable 'CONFIGURATION': $configuration")
+                else -> null
             }
+
+            return configuration.toNativeBuildType()
+                ?: System.getenv("KOTLIN_FRAMEWORK_BUILD_TYPE")?.toNativeBuildType()
+                ?: throw IllegalArgumentException(
+                    "Unexpected environment variable 'CONFIGURATION': $configuration. " +
+                            "Use 'KOTLIN_FRAMEWORK_BUILD_TYPE' debug/release for specifying build type."
+                )
         }
 
     val target: KonanTarget?
