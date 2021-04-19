@@ -37,7 +37,7 @@ fun File.withReplacedExtensionOrNull(oldExt: String, newExt: String): File? {
  * If this file does not belong to the [base] directory, it is returned unchanged.
  */
 fun File.descendantRelativeTo(base: File): File {
-    val prefix = base.normalize()
-    val cwd = this.normalize()
-    return if (cwd.startsWith(prefix)) cwd.relativeTo(prefix) else this
+    val cwd = base.normalize()
+    val filePath = this.normalize()
+    return if (filePath.startsWith(cwd)) filePath.relativeTo(cwd) else this
 }
