@@ -107,9 +107,9 @@ internal fun Project.registerAssembleAppleFrameworkTask(framework: Framework) {
     val frameworkTarget = framework.target
     val frameworkTaskName = lowerCamelCaseName(
         "assemble",
+        framework.baseName,
         frameworkBuildType.name.toLowerCaseAsciiOnly(),
         "AppleFramework",
-        framework.baseName,
         frameworkTarget.name
     )
 
@@ -117,19 +117,20 @@ internal fun Project.registerAssembleAppleFrameworkTask(framework: Framework) {
     val envTarget = XcodeEnvironment.target
     val envFrameworkSearchDir = XcodeEnvironment.frameworkSearchDir
 
+    if (
+        !framework.konanTarget.enabledOnCurrentHost
+        || frameworkBuildType != envBuildType
+        || frameworkTarget.konanTarget != envTarget
+        || envFrameworkSearchDir == null
+    ) return
+
     umbrellaAssembleAppleFrameworkTask.dependsOn(
         registerTask<Copy>(frameworkTaskName) { task ->
             task.group = BasePlugin.BUILD_GROUP
             task.description = "Packs $frameworkBuildType ${frameworkTarget.name} framework for Xcode"
-            task.enabled = framework.konanTarget.enabledOnCurrentHost
-                    && frameworkBuildType == envBuildType
-                    && frameworkTarget.konanTarget == envTarget
-
             task.dependsOn(framework.linkTaskName)
-            if (envFrameworkSearchDir != null) {
-                task.from(framework.outputDirectory)
-                task.into(appleFrameworkDir(envFrameworkSearchDir))
-            }
+            task.from(framework.outputDirectory)
+            task.into(appleFrameworkDir(envFrameworkSearchDir))
         }
     )
 }
