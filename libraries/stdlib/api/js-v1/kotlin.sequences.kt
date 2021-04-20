@@ -141,10 +141,12 @@ public fun <T> kotlin.sequences.Sequence<T>.first(): T
 public inline fun <T> kotlin.sequences.Sequence<T>.first(predicate: (T) -> kotlin.Boolean): T
 
 @kotlin.SinceKotlin(version = "1.5")
+@kotlin.ExperimentalStdlibApi
 @kotlin.internal.InlineOnly
 public inline fun <T, R : kotlin.Any> kotlin.sequences.Sequence<T>.firstNotNullOf(transform: (T) -> R?): R
 
 @kotlin.SinceKotlin(version = "1.5")
+@kotlin.ExperimentalStdlibApi
 @kotlin.internal.InlineOnly
 public inline fun <T, R : kotlin.Any> kotlin.sequences.Sequence<T>.firstNotNullOfOrNull(transform: (T) -> R?): R?
 

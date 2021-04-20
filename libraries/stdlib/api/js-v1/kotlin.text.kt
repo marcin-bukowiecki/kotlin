@@ -297,10 +297,12 @@ public fun kotlin.CharSequence.first(): kotlin.Char
 public inline fun kotlin.CharSequence.first(predicate: (kotlin.Char) -> kotlin.Boolean): kotlin.Char
 
 @kotlin.SinceKotlin(version = "1.5")
+@kotlin.ExperimentalStdlibApi
 @kotlin.internal.InlineOnly
 public inline fun <R : kotlin.Any> kotlin.CharSequence.firstNotNullOf(transform: (kotlin.Char) -> R?): R
 
 @kotlin.SinceKotlin(version = "1.5")
+@kotlin.ExperimentalStdlibApi
 @kotlin.internal.InlineOnly
 public inline fun <R : kotlin.Any> kotlin.CharSequence.firstNotNullOfOrNull(transform: (kotlin.Char) -> R?): R?
 

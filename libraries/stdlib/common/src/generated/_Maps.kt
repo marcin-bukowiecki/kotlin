@@ -24,6 +24,7 @@ import kotlin.ranges.reversed
  * @sample samples.collections.Collections.Transformations.firstNotNullOf
  */
 @SinceKotlin("1.5")
+@ExperimentalStdlibApi
 @kotlin.internal.InlineOnly
 public inline fun <K, V, R : Any> Map<out K, V>.firstNotNullOf(transform: (Map.Entry<K, V>) -> R?): R {
     return firstNotNullOfOrNull(transform) ?: throw NoSuchElementException("No element of the map was transformed to a non-null value.")
@@ -36,6 +37,7 @@ public inline fun <K, V, R : Any> Map<out K, V>.firstNotNullOf(transform: (Map.E
  * @sample samples.collections.Collections.Transformations.firstNotNullOf
  */
 @SinceKotlin("1.5")
+@ExperimentalStdlibApi
 @kotlin.internal.InlineOnly
 public inline fun <K, V, R : Any> Map<out K, V>.firstNotNullOfOrNull(transform: (Map.Entry<K, V>) -> R?): R? {
     for (element in this) {

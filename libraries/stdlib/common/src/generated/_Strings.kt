@@ -88,6 +88,7 @@ public inline fun CharSequence.first(predicate: (Char) -> Boolean): Char {
  * @sample samples.collections.Collections.Transformations.firstNotNullOf
  */
 @SinceKotlin("1.5")
+@ExperimentalStdlibApi
 @kotlin.internal.InlineOnly
 public inline fun <R : Any> CharSequence.firstNotNullOf(transform: (Char) -> R?): R {
     return firstNotNullOfOrNull(transform) ?: throw NoSuchElementException("No element of the char sequence was transformed to a non-null value.")
@@ -100,6 +101,7 @@ public inline fun <R : Any> CharSequence.firstNotNullOf(transform: (Char) -> R?)
  * @sample samples.collections.Collections.Transformations.firstNotNullOf
  */
 @SinceKotlin("1.5")
+@ExperimentalStdlibApi
 @kotlin.internal.InlineOnly
 public inline fun <R : Any> CharSequence.firstNotNullOfOrNull(transform: (Char) -> R?): R? {
     for (element in this) {
