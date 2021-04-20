@@ -342,17 +342,13 @@ private val jvmFilePhases = listOf(
     propertiesPhase,
     remapObjectFieldAccesses,
     anonymousObjectSuperConstructorPhase,
-    tailrecPhase,
-    makePatchParentsPhase(1),
-
     jvmStandardLibraryBuiltInsPhase,
 
     rangeContainsLoweringPhase,
     forLoopsPhase,
     collectionStubMethodLowering,
     jvmInlineClassPhase,
-
-    makePatchParentsPhase(2),
+    makePatchParentsPhase(1),
 
     enumWhenPhase,
     singletonReferencesPhase,
@@ -362,6 +358,10 @@ private val jvmFilePhases = listOf(
     returnableBlocksPhase,
     sharedVariablesPhase,
     localDeclarationsPhase,
+
+    tailrecPhase,
+    makePatchParentsPhase(2),
+
     jvmLocalClassExtractionPhase,
     staticCallableReferencePhase,
 
