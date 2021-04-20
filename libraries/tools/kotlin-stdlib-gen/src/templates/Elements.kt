@@ -1086,6 +1086,7 @@ object Elements : TemplateGroupBase() {
     } builder {
         inlineOnly()
         since("1.5")
+        annotation("@ExperimentalStdlibApi")
         typeParam("R : Any")
         returns("R?")
 
@@ -1115,6 +1116,7 @@ object Elements : TemplateGroupBase() {
     } builder {
         inlineOnly()
         since("1.5")
+        annotation("@ExperimentalStdlibApi")
         typeParam("R : Any")
         returns("R")
 

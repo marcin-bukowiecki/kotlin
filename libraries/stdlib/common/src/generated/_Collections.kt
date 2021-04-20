@@ -229,6 +229,7 @@ public inline fun <T> Iterable<T>.first(predicate: (T) -> Boolean): T {
  * @sample samples.collections.Collections.Transformations.firstNotNullOf
  */
 @SinceKotlin("1.5")
+@ExperimentalStdlibApi
 @kotlin.internal.InlineOnly
 public inline fun <T, R : Any> Iterable<T>.firstNotNullOf(transform: (T) -> R?): R {
     return firstNotNullOfOrNull(transform) ?: throw NoSuchElementException("No element of the collection was transformed to a non-null value.")
@@ -241,6 +242,7 @@ public inline fun <T, R : Any> Iterable<T>.firstNotNullOf(transform: (T) -> R?):
  * @sample samples.collections.Collections.Transformations.firstNotNullOf
  */
 @SinceKotlin("1.5")
+@ExperimentalStdlibApi
 @kotlin.internal.InlineOnly
 public inline fun <T, R : Any> Iterable<T>.firstNotNullOfOrNull(transform: (T) -> R?): R? {
     for (element in this) {

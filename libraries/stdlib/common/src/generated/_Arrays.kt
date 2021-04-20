@@ -1182,6 +1182,7 @@ public inline fun CharArray.first(predicate: (Char) -> Boolean): Char {
  * @sample samples.collections.Collections.Transformations.firstNotNullOf
  */
 @SinceKotlin("1.5")
+@ExperimentalStdlibApi
 @kotlin.internal.InlineOnly
 public inline fun <T, R : Any> Array<out T>.firstNotNullOf(transform: (T) -> R?): R {
     return firstNotNullOfOrNull(transform) ?: throw NoSuchElementException("No element of the array was transformed to a non-null value.")
@@ -1194,6 +1195,7 @@ public inline fun <T, R : Any> Array<out T>.firstNotNullOf(transform: (T) -> R?)
  * @sample samples.collections.Collections.Transformations.firstNotNullOf
  */
 @SinceKotlin("1.5")
+@ExperimentalStdlibApi
 @kotlin.internal.InlineOnly
 public inline fun <T, R : Any> Array<out T>.firstNotNullOfOrNull(transform: (T) -> R?): R? {
     for (element in this) {
