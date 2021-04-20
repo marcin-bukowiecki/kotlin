@@ -161,11 +161,10 @@ internal fun Project.registerEmbedAndSignAppleFrameworkTask() {
         task.group = "build"
         task.description = "Embed and sign all frameworks as requested by Xcode's environment variables"
 
-        val appleFrameworks = multiplatformExtensionOrNull?.targets
-            ?.filterIsInstance<KotlinNativeTarget>()
-            ?.filter { it.konanTarget.family.isAppleFamily }
-
-        if (appleFrameworks.isNullOrEmpty()) return@registerTask
+        val appleFrameworks: Collection<KotlinNativeTarget> = multiplatformExtensionOrNull?.targets
+            ?.withType(KotlinNativeTarget::class.java)
+            ?.matching { it.konanTarget == envTarget }
+            ?: emptyList()
 
         task.dependsOn(UMBRELLA_ASSEMBLE_APPLE_FRAMEWORK)
         task.inputs.apply {
@@ -175,22 +174,28 @@ internal fun Project.registerEmbedAndSignAppleFrameworkTask() {
             property("sign", envSign)
         }
 
-        val outputFiles =
-            appleFrameworks
-                .filter { it.konanTarget == envTarget }
-                .map { it.binaries.getFramework(envBuildType).outputFile }
+        task.onlyIf { appleFrameworks.isNotEmpty() }
 
-        task.from(outputFiles.map { appleFrameworkDir(envFrameworkSearchDir).resolve(it.name) }.toTypedArray())
+        task.from(
+            appleFrameworks.map {
+                val fileName = it.binaries.getFramework(envBuildType).outputFile.name
+                appleFrameworkDir(envFrameworkSearchDir).resolve(fileName)
+            }.toTypedArray()
+        )
         task.into(envEmbeddedFrameworksDir)
 
         if (envSign != null) {
             task.doLast {
-                outputFiles.forEach { outputFile ->
-                    val binaryFile = envEmbeddedFrameworksDir.resolve(outputFile.name).resolve(outputFile.nameWithoutExtension)
-                    exec {
-                        it.commandLine("codesign", "--force", "--sign", envSign, "--", binaryFile)
+                appleFrameworks
+                    .map {
+                        val outputFile = it.binaries.getFramework(envBuildType).outputFile
+                        envEmbeddedFrameworksDir.resolve(outputFile.name).resolve(outputFile.nameWithoutExtension)
                     }
-                }
+                    .forEach { binaryFile ->
+                        exec {
+                            it.commandLine("codesign", "--force", "--sign", envSign, "--", binaryFile)
+                        }
+                    }
             }
         }
     }
