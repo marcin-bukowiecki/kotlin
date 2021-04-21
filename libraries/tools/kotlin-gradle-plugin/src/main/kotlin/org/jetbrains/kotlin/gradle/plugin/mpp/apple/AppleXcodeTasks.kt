@@ -12,14 +12,14 @@ import org.gradle.api.plugins.BasePlugin
 import org.gradle.api.tasks.Copy
 import org.gradle.api.tasks.TaskProvider
 import org.jetbrains.kotlin.gradle.dsl.multiplatformExtensionOrNull
-import org.jetbrains.kotlin.gradle.plugin.mpp.*
+import org.jetbrains.kotlin.gradle.plugin.mpp.Framework
+import org.jetbrains.kotlin.gradle.plugin.mpp.KotlinNativeTarget
+import org.jetbrains.kotlin.gradle.plugin.mpp.NativeBuildType
 import org.jetbrains.kotlin.gradle.plugin.mpp.enabledOnCurrentHost
 import org.jetbrains.kotlin.gradle.tasks.dependsOn
 import org.jetbrains.kotlin.gradle.tasks.locateOrRegisterTask
 import org.jetbrains.kotlin.gradle.tasks.registerTask
 import org.jetbrains.kotlin.gradle.utils.lowerCamelCaseName
-import org.jetbrains.kotlin.konan.target.Architecture
-import org.jetbrains.kotlin.konan.target.HostManager
 import org.jetbrains.kotlin.konan.target.KonanTarget
 import org.jetbrains.kotlin.util.capitalizeDecapitalize.toLowerCaseAsciiOnly
 import java.io.File
@@ -43,29 +43,14 @@ private object XcodeEnvironment {
         get() {
             val sdk = System.getenv("SDK_NAME") ?: return null
 
-            val hostArch = System.getenv("NATIVE_ARCH")
-            val hostArchitecture = when {
-                hostArch?.contains("x86_64") == true -> Architecture.X64
-                hostArch?.contains("arm64") == true -> Architecture.ARM64
-                else -> HostManager.host.architecture
-            }
-
+            //todo support simulator architecture for Apple Silicon
             return when {
                 sdk.startsWith("iphoneos") -> KonanTarget.IOS_ARM64
-                sdk.startsWith("iphonesimulator") -> when (hostArchitecture) {
-                    Architecture.ARM64 -> KonanTarget.IOS_SIMULATOR_ARM64
-                    else -> KonanTarget.IOS_X64
-                }
+                sdk.startsWith("iphonesimulator") -> KonanTarget.IOS_X64
                 sdk.startsWith("watchos") -> KonanTarget.WATCHOS_ARM64
-                sdk.startsWith("watchsimulator") -> when (hostArchitecture) {
-                    Architecture.ARM64 -> KonanTarget.WATCHOS_SIMULATOR_ARM64
-                    else -> KonanTarget.WATCHOS_X64
-                }
+                sdk.startsWith("watchsimulator") -> KonanTarget.WATCHOS_X64
                 sdk.startsWith("appletvos") -> KonanTarget.TVOS_ARM64
-                sdk.startsWith("appletvsimulator") -> when (hostArchitecture) {
-                    Architecture.ARM64 -> KonanTarget.TVOS_SIMULATOR_ARM64
-                    else -> KonanTarget.TVOS_X64
-                }
+                sdk.startsWith("appletvsimulator") -> KonanTarget.TVOS_X64
                 else -> null
             }
         }
