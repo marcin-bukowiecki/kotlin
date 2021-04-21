@@ -7,12 +7,9 @@ package org.jetbrains.kotlin.idea.frontend.api.fir
 
 import com.intellij.openapi.project.Project
 import org.jetbrains.kotlin.fir.FirSession
-import org.jetbrains.kotlin.fir.declarations.FirFile
 import org.jetbrains.kotlin.fir.resolve.providers.FirSymbolProvider
 import org.jetbrains.kotlin.fir.resolve.symbolProvider
-import org.jetbrains.kotlin.idea.fir.low.level.api.api.FirModuleResolveState
-import org.jetbrains.kotlin.idea.fir.low.level.api.api.LowLevelFirApiFacadeForCompletion
-import org.jetbrains.kotlin.idea.fir.low.level.api.api.getFirFile
+import org.jetbrains.kotlin.idea.fir.low.level.api.api.*
 import org.jetbrains.kotlin.idea.frontend.api.InvalidWayOfUsingAnalysisSession
 import org.jetbrains.kotlin.idea.frontend.api.KtAnalysisSession
 import org.jetbrains.kotlin.idea.frontend.api.components.KtVisibilityChecker
@@ -20,11 +17,14 @@ import org.jetbrains.kotlin.idea.frontend.api.tokens.ValidityToken
 import org.jetbrains.kotlin.idea.frontend.api.components.KtSymbolDeclarationRendererProvider
 import org.jetbrains.kotlin.idea.frontend.api.fir.components.*
 import org.jetbrains.kotlin.idea.frontend.api.fir.symbols.KtFirSymbolProvider
-import org.jetbrains.kotlin.idea.frontend.api.fir.utils.EnclosingDeclarationContext
-import org.jetbrains.kotlin.idea.frontend.api.fir.utils.recordCompletionContext
 import org.jetbrains.kotlin.idea.frontend.api.fir.utils.threadLocal
 import org.jetbrains.kotlin.psi.KtElement
 import org.jetbrains.kotlin.psi.KtFile
+
+internal enum class AnalysisSessionMode {
+    DEFAULT,
+    DEPENDENT_COPY
+}
 
 internal class KtFirAnalysisSession
 private constructor(
@@ -32,7 +32,7 @@ private constructor(
     val firResolveState: FirModuleResolveState,
     internal val firSymbolBuilder: KtSymbolByFirBuilder,
     token: ValidityToken,
-    val context: KtFirAnalysisSessionContext,
+    val mode: AnalysisSessionMode,
 ) : KtAnalysisSession(token) {
 
     override val smartCastProviderImpl = KtFirSmartcastProvider(this, token)
@@ -71,18 +71,22 @@ private constructor(
     override val subtypingComponentImpl = KtFirSubtypingComponent(this, token)
 
     override fun createContextDependentCopy(originalKtFile: KtFile, fakeKtElement: KtElement): KtAnalysisSession {
-        check(context == KtFirAnalysisSessionContext.DefaultContext) {
+        check(mode == AnalysisSessionMode.DEFAULT) {
             "Cannot create context-dependent copy of KtAnalysis session from a context dependent one"
         }
-        val contextResolveState = LowLevelFirApiFacadeForCompletion.getResolveStateForCompletion(firResolveState)
-        val originalFirFile = originalKtFile.getFirFile(firResolveState)
-        val context = KtFirAnalysisSessionContext.FakeFileContext(originalKtFile, originalFirFile, fakeKtElement, contextResolveState)
+
+        val contextResolveState = LowLevelFirApiFacadeForDependentCopy.getResolveStateForDependedCopy(
+            originalState = firResolveState,
+            originalKtFile = originalKtFile,
+            copiedKtElement = fakeKtElement
+        )
+
         return KtFirAnalysisSession(
             project,
             contextResolveState,
             firSymbolBuilder.createReadOnlyCopy(contextResolveState),
             token,
-            context
+            AnalysisSessionMode.DEPENDENT_COPY
         )
     }
 
@@ -107,28 +111,8 @@ private constructor(
                 firResolveState,
                 firSymbolBuilder,
                 token,
-                KtFirAnalysisSessionContext.DefaultContext
+                AnalysisSessionMode.DEFAULT
             )
         }
-    }
-}
-
-internal sealed class KtFirAnalysisSessionContext {
-    object DefaultContext : KtFirAnalysisSessionContext()
-
-    class FakeFileContext(
-        originalFile: KtFile,
-        firFile: FirFile,
-        fakeContextElement: KtElement,
-        fakeModuleResolveState: FirModuleResolveState
-    ) : KtFirAnalysisSessionContext() {
-        init {
-            require(!fakeContextElement.isPhysical)
-
-            val enclosingContext = EnclosingDeclarationContext.detect(originalFile, fakeContextElement)
-            enclosingContext.recordCompletionContext(firFile, fakeModuleResolveState)
-        }
-
-        val fakeKtFile = fakeContextElement.containingKtFile
     }
 }

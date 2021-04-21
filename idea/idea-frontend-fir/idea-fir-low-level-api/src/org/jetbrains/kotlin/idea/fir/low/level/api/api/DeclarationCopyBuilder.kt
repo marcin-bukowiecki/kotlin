@@ -20,31 +20,31 @@ import org.jetbrains.kotlin.psi.*
 object DeclarationCopyBuilder {
     fun createDeclarationCopy(
         originalFirDeclaration: FirDeclaration,
-        fakeKtDeclaration: KtDeclaration,
+        copiedKtDeclaration: KtDeclaration,
         state: FirModuleResolveState,
     ): FirDeclaration {
-        return when (fakeKtDeclaration) {
+        return when (copiedKtDeclaration) {
             is KtNamedFunction -> buildFunctionCopy(
-                fakeKtDeclaration,
+                copiedKtDeclaration,
                 originalFirDeclaration as FirSimpleFunction,
                 state
             )
             is KtProperty -> buildPropertyCopy(
-                fakeKtDeclaration,
+                copiedKtDeclaration,
                 originalFirDeclaration as FirProperty,
                 state
             )
             is KtClassOrObject -> buildClassCopy(
-                fakeKtDeclaration,
+                copiedKtDeclaration,
                 originalFirDeclaration as FirRegularClass,
                 state
             )
             is KtTypeAlias -> buildTypeAliasCopy(
-                fakeKtDeclaration,
+                copiedKtDeclaration,
                 originalFirDeclaration as FirTypeAlias,
                 state
             )
-            else -> error("Unsupported declaration ${fakeKtDeclaration::class.simpleName}")
+            else -> error("Unsupported declaration ${copiedKtDeclaration::class.simpleName}")
         }
     }
 

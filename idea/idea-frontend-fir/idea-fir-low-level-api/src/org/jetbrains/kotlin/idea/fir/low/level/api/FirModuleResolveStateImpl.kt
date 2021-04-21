@@ -81,10 +81,6 @@ internal class FirModuleResolveStateImpl(
         return firFileBuilder.getBuiltFirFileOrNull(ktFile, cache)
     }
 
-    override fun recordPsiToFirMappingsForCompletionFrom(fir: FirDeclaration, firFile: FirFile, ktFile: KtFile) {
-        error("Should be called only from FirModuleResolveStateForCompletion")
-    }
-
     @OptIn(InternalForInline::class)
     override fun findNonLocalSourceFirDeclaration(
         ktDeclaration: KtDeclaration,
@@ -154,24 +150,6 @@ internal class FirModuleResolveStateImpl(
             towerDataContextCollector = collector,
         )
         return declaration
-    }
-
-    override fun lazyResolveDeclarationForCompletion(
-        firDeclaration: FirDeclaration,
-        containerFirFile: FirFile,
-    ) {
-        firFileBuilder.runCustomResolveWithPCECheck(containerFirFile, rootModuleSession.cache) {
-            firLazyDeclarationResolver.runLazyResolveWithoutLock(
-                firDeclaration,
-                rootModuleSession.cache,
-                containerFirFile,
-                containerFirFile.session.firIdeProvider,
-                fromPhase = firDeclaration.resolvePhase,
-                toPhase = FirResolvePhase.BODY_RESOLVE,
-                towerDataContextCollector = collector,
-                checkPCE = true
-            )
-        }
     }
 
     override fun getFirFile(declaration: FirDeclaration, cache: ModuleFileCache): FirFile? =
