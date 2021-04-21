@@ -99,7 +99,7 @@ internal fun Project.registerAssembleAppleFrameworkTask(framework: Framework) {
         "assemble",
         framework.baseName,
         frameworkBuildType.name.toLowerCaseAsciiOnly(),
-        "AppleFramework",
+        "AppleFrameworkForXcode",
         frameworkTarget.name
     )
 
@@ -125,14 +125,14 @@ internal fun Project.registerAssembleAppleFrameworkTask(framework: Framework) {
     )
 }
 
-private const val UMBRELLA_ASSEMBLE_APPLE_FRAMEWORK = "assembleAppleFramework"
+private const val UMBRELLA_ASSEMBLE_APPLE_FRAMEWORK = "assembleAppleFrameworkForXcode"
 private val Project.umbrellaAssembleAppleFrameworkTask: TaskProvider<Task>
     get() = locateOrRegisterTask(UMBRELLA_ASSEMBLE_APPLE_FRAMEWORK) {
         it.group = "build"
         it.description = "Build all frameworks as requested by Xcode's environment variables"
     }
 
-private const val EMBED_AND_SIGN_APPLE_FRAMEWORK = "embedAndSignAppleFramework"
+private const val EMBED_AND_SIGN_APPLE_FRAMEWORK = "embedAndSignAppleFrameworkForXcode"
 internal fun Project.registerEmbedAndSignAppleFrameworkTask() {
     val envBuildType = XcodeEnvironment.buildType
     val envTarget = XcodeEnvironment.target

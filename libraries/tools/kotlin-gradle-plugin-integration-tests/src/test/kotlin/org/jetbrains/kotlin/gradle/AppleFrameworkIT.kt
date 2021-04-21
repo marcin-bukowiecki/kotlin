@@ -16,7 +16,7 @@ class AppleFrameworkIT : KotlinAndroid36GradleIT() {
         get() = gradleVersion
 
     @Test
-    fun `assemble debug AppleFramework for IosArm64`() {
+    fun `assemble debug AppleFrameworkForXcode for IosArm64`() {
         with(Project("sharedAppleFramework")) {
             val options: BuildOptions = defaultBuildOptions().copy(
                 customEnvironmentVariables = mapOf(
@@ -24,16 +24,16 @@ class AppleFrameworkIT : KotlinAndroid36GradleIT() {
                     "SDK_NAME" to "iphoneos123"
                 )
             )
-            build("assembleAppleFramework", options = options) {
+            build("assembleAppleFrameworkForXcode", options = options) {
                 assertSuccessful()
-                assertTasksExecuted(":shared:assembleSharedDebugAppleFrameworkIosArm64")
+                assertTasksExecuted(":shared:assembleSharedDebugAppleFrameworkForXcodeIosArm64")
                 assertFileExists("/shared/build/xcode-frameworks/debug/iphoneos123/shared.framework")
                 assertFileExists("/shared/build/xcode-frameworks/debug/iphoneos123/shared.framework.dSYM")
             }
 
-            build("assembleAppleFramework", options = options) {
+            build("assembleAppleFrameworkForXcode", options = options) {
                 assertSuccessful()
-                assertTasksUpToDate(":shared:assembleSharedDebugAppleFrameworkIosArm64")
+                assertTasksUpToDate(":shared:assembleSharedDebugAppleFrameworkForXcodeIosArm64")
                 assertFileExists("/shared/build/xcode-frameworks/debug/iphoneos123/shared.framework")
                 assertFileExists("/shared/build/xcode-frameworks/debug/iphoneos123/shared.framework.dSYM")
             }
@@ -46,8 +46,8 @@ class AppleFrameworkIT : KotlinAndroid36GradleIT() {
             build("tasks") {
                 assertSuccessful()
                 assertTasksNotRegistered(
-                    ":shared:assembleAppleFramework",
-                    ":shared:embedAndSignAppleFramework"
+                    ":shared:assembleAppleFrameworkForXcode",
+                    ":shared:embedAndSignAppleFrameworkForXcode"
                 )
             }
         }
@@ -68,17 +68,17 @@ class AppleFrameworkIT : KotlinAndroid36GradleIT() {
             build("tasks", options = options) {
                 assertSuccessful()
                 assertTasksRegistered(
-                    ":shared:assembleAppleFramework",
-                    ":shared:assembleSharedDebugAppleFrameworkIosArm64",
-                    ":shared:embedAndSignAppleFramework"
+                    ":shared:assembleAppleFrameworkForXcode",
+                    ":shared:assembleSharedDebugAppleFrameworkForXcodeIosArm64",
+                    ":shared:embedAndSignAppleFrameworkForXcode"
                 )
-                assertTasksNotRegistered(":shared:assembleSharedDebugAppleFrameworkIosX64")
+                assertTasksNotRegistered(":shared:assembleSharedDebugAppleFrameworkForXcodeIosX64")
             }
         }
     }
 
     @Test
-    fun `check there isn't embedAndSignAppleFramework task without required Xcode environments`() {
+    fun `check there isn't embedAndSignAppleFrameworkForXcode task without required Xcode environments`() {
         with(Project("sharedAppleFramework")) {
             val options: BuildOptions = defaultBuildOptions().copy(
                 customEnvironmentVariables = mapOf(
@@ -89,12 +89,12 @@ class AppleFrameworkIT : KotlinAndroid36GradleIT() {
             build("tasks", options = options) {
                 assertSuccessful()
                 assertTasksRegistered(
-                    ":shared:assembleAppleFramework",
-                    ":shared:assembleSharedDebugAppleFrameworkIosArm64",
+                    ":shared:assembleAppleFrameworkForXcode",
+                    ":shared:assembleSharedDebugAppleFrameworkForXcodeIosArm64",
                 )
                 assertTasksNotRegistered(
-                    ":shared:embedAndSignAppleFramework",
-                    ":shared:assembleSharedDebugAppleFrameworkIosX64"
+                    ":shared:embedAndSignAppleFrameworkForXcode",
+                    ":shared:assembleSharedDebugAppleFrameworkForXcodeIosX64"
                 )
             }
         }
