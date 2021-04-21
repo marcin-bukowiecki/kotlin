@@ -33,7 +33,10 @@ import org.jetbrains.kotlin.idea.KotlinFileType;
 import org.jetbrains.kotlin.lexer.KtTokens;
 import org.jetbrains.kotlin.name.FqName;
 import org.jetbrains.kotlin.name.Name;
+import org.jetbrains.kotlin.psi.psiUtil.ClassIdCalculator;
 import org.jetbrains.kotlin.psi.psiUtil.KtPsiUtilKt;
+import org.jetbrains.kotlin.psi.stubs.KotlinFunctionStub;
+import org.jetbrains.kotlin.psi.stubs.KotlinNamedDeclarationStub;
 import org.jetbrains.kotlin.psi.stubs.KotlinStubWithFqName;
 import org.jetbrains.kotlin.types.expressions.OperatorConventions;
 import org.jetbrains.kotlin.util.OperatorNameConventions;
@@ -42,7 +45,7 @@ import java.util.Set;
 
 import static org.jetbrains.kotlin.psi.KtPsiFactoryKt.KtPsiFactory;
 
-abstract class KtNamedDeclarationStub<T extends KotlinStubWithFqName<?>> extends KtDeclarationStub<T> implements KtNamedDeclaration {
+abstract class KtNamedDeclarationStub<T extends KotlinNamedDeclarationStub<?>> extends KtDeclarationStub<T> implements KtNamedDeclaration {
     public KtNamedDeclarationStub(@NotNull T stub, @NotNull IStubElementType nodeType) {
         super(stub, nodeType);
     }
@@ -212,5 +215,14 @@ abstract class KtNamedDeclarationStub<T extends KotlinStubWithFqName<?>> extends
             return stub.getFqName();
         }
         return KtNamedDeclarationUtil.getFQName(this);
+    }
+
+    @Override
+    public boolean isFullyLocal() {
+        T stub = getStub();
+        if (stub != null) {
+            return stub.isFullyLocal();
+        }
+        return ClassIdCalculator.isFullyLocal(this);
     }
 }

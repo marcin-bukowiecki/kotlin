@@ -28,6 +28,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.kotlin.KtNodeTypes;
 import org.jetbrains.kotlin.lexer.KtTokens;
+import org.jetbrains.kotlin.psi.psiUtil.ClassIdCalculator;
 import org.jetbrains.kotlin.psi.psiUtil.KtPsiUtilKt;
 import org.jetbrains.kotlin.psi.stubs.KotlinFunctionStub;
 import org.jetbrains.kotlin.psi.stubs.elements.KtStubElementTypes;
@@ -229,6 +230,15 @@ public class KtNamedFunction extends KtTypeParameterListOwnerStub<KotlinFunction
     public boolean isLocal() {
         PsiElement parent = getParent();
         return !(parent instanceof KtFile || parent instanceof KtClassBody);
+    }
+
+    @Override
+    public boolean isFullyLocal() {
+        KotlinFunctionStub stub = getStub();
+        if (stub != null) {
+            return stub.isFullyLocal();
+        }
+        return ClassIdCalculator.isFullyLocal(this);
     }
 
     public boolean isTopLevel() {

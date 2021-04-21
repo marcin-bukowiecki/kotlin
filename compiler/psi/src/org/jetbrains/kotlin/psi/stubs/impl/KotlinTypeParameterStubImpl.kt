@@ -34,4 +34,6 @@ class KotlinTypeParameterStubImpl(
     override fun getName() = StringRef.toString(name)
     // type parameters don't have FqNames
     override fun getFqName() = null
+
+    override fun isFullyLocal(): Boolean = true
 }

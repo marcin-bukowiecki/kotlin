@@ -28,6 +28,7 @@ class KotlinFunctionStubImpl(
     parent: StubElement<out PsiElement>?,
     private val nameRef: StringRef?,
     private val isTopLevel: Boolean,
+    private val isFullyLocal: Boolean,
     private val fqName: FqName?,
     private val isExtension: Boolean,
     private val hasBlockBody: Boolean,
@@ -45,6 +46,7 @@ class KotlinFunctionStubImpl(
 
     override fun getName() = StringRef.toString(nameRef)
     override fun isTopLevel() = isTopLevel
+    override fun isFullyLocal() = isFullyLocal
     override fun isExtension() = isExtension
     override fun hasBlockBody() = hasBlockBody
     override fun hasBody() = hasBody

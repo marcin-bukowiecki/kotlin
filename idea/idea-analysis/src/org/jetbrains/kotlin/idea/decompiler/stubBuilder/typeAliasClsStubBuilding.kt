@@ -32,7 +32,8 @@ fun createTypeAliasStub(
 
     val typeAlias = KotlinTypeAliasStubImpl(
         parent, classId.shortClassName.ref(), classId.asSingleFqName().ref(), classId,
-        isTopLevel = !classId.isNestedClass
+        isTopLevel = !classId.isNestedClass,
+        isFullyLocal = classId.isLocal,
     )
 
     val modifierList = createModifierListStubForDeclaration(typeAlias, typeAliasProto.flags, arrayListOf(VISIBILITY), listOf())

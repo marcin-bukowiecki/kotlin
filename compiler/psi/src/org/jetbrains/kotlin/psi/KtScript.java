@@ -49,6 +49,11 @@ public class KtScript extends KtNamedDeclarationStub<KotlinScriptStub> implement
     }
 
     @Override
+    public boolean isFullyLocal() {
+        return false; // are scripts local?
+    }
+
+    @Override
     public String getName() {
         return getFqName().shortName().asString();
     }

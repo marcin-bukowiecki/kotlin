@@ -57,5 +57,7 @@ class KtTypeAlias : KtTypeParameterListOwnerStub<KotlinTypeAliasStub>, KtNamedDe
         return ClassIdCalculator.calculateClassId(this)
     }
 
+    override fun isFullyLocal(): Boolean = stub?.isFullyLocal() ?: ClassIdCalculator.isFullyLocal(this)
+
     override fun getPresentation() = ItemPresentationProviders.getItemPresentation(this)
 }

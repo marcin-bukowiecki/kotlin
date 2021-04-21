@@ -134,6 +134,7 @@ private class ClassClsStubBuilder(
                     isTopLevel = !this.classId.isNestedClass,
                     isDefault = isCompanionObject,
                     isLocal = false,
+                    isFullyLocal = false,
                     isObjectLiteral = false,
                 )
             }
@@ -148,6 +149,7 @@ private class ClassClsStubBuilder(
                     isInterface = classKind == ProtoBuf.Class.Kind.INTERFACE,
                     isEnumEntry = classKind == ProtoBuf.Class.Kind.ENUM_ENTRY,
                     isLocal = false,
+                    isFullyLocal = false,
                     isTopLevel = !this.classId.isNestedClass,
                 )
             }
@@ -210,7 +212,8 @@ private class ClassClsStubBuilder(
                 isInterface = false,
                 isEnumEntry = true,
                 isLocal = false,
-                isTopLevel = false
+                isFullyLocal = classId.isLocal,
+                isTopLevel = false,
             )
             if (annotations.isNotEmpty()) {
                 createAnnotationStubs(annotations, createEmptyModifierListStub(enumEntryStub))

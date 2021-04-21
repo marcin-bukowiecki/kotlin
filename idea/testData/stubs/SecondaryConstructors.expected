@@ -2,10 +2,10 @@ PsiJetFileStubImpl[package=test]
   PACKAGE_DIRECTIVE
     REFERENCE_EXPRESSION[referencedName=test]
   IMPORT_LIST
-  CLASS[classId=test/SecondaryConstructors, fqName=test.SecondaryConstructors, isEnumEntry=false, isInterface=false, isLocal=false, isTopLevel=true, name=SecondaryConstructors, superNames=[]]
+  CLASS[classId=test/SecondaryConstructors, fqName=test.SecondaryConstructors, isEnumEntry=false, isFullyLocal=false, isInterface=false, isLocal=false, isTopLevel=true, name=SecondaryConstructors, superNames=[]]
     PRIMARY_CONSTRUCTOR
       VALUE_PARAMETER_LIST
-        VALUE_PARAMETER[fqName=null, hasDefaultValue=false, hasValOrVar=false, isMutable=false, name=x]
+        VALUE_PARAMETER[fqName=null, hasDefaultValue=false, hasValOrVar=false, isFullyLocal=true, isMutable=false, name=x]
           TYPE_REFERENCE
             USER_TYPE
               REFERENCE_EXPRESSION[referencedName=Boolean]
@@ -19,7 +19,7 @@ PsiJetFileStubImpl[package=test]
                 USER_TYPE
                   REFERENCE_EXPRESSION[referencedName=anno]
         VALUE_PARAMETER_LIST
-          VALUE_PARAMETER[fqName=null, hasDefaultValue=false, hasValOrVar=false, isMutable=false, name=x]
+          VALUE_PARAMETER[fqName=null, hasDefaultValue=false, hasValOrVar=false, isFullyLocal=true, isMutable=false, name=x]
             TYPE_REFERENCE
               USER_TYPE
                 REFERENCE_EXPRESSION[referencedName=String]
@@ -27,18 +27,18 @@ PsiJetFileStubImpl[package=test]
       SECONDARY_CONSTRUCTOR
         MODIFIER_LIST[private]
         VALUE_PARAMETER_LIST
-          VALUE_PARAMETER[fqName=null, hasDefaultValue=false, hasValOrVar=false, isMutable=false, name=x]
+          VALUE_PARAMETER[fqName=null, hasDefaultValue=false, hasValOrVar=false, isFullyLocal=true, isMutable=false, name=x]
             TYPE_REFERENCE
               USER_TYPE
                 REFERENCE_EXPRESSION[referencedName=Int]
-      CLASS[classId=test/SecondaryConstructors.Inner, fqName=test.SecondaryConstructors.Inner, isEnumEntry=false, isInterface=false, isLocal=false, isTopLevel=false, name=Inner, superNames=[]]
+      CLASS[classId=test/SecondaryConstructors.Inner, fqName=test.SecondaryConstructors.Inner, isEnumEntry=false, isFullyLocal=false, isInterface=false, isLocal=false, isTopLevel=false, name=Inner, superNames=[]]
         MODIFIER_LIST[inner]
         TYPE_PARAMETER_LIST
-          TYPE_PARAMETER[fqName=null, isInVariance=false, isOutVariance=false, name=T]
+          TYPE_PARAMETER[fqName=null, isFullyLocal=true, isInVariance=false, isOutVariance=false, name=T]
             TYPE_REFERENCE
               USER_TYPE
                 REFERENCE_EXPRESSION[referencedName=String]
-          TYPE_PARAMETER[fqName=null, isInVariance=false, isOutVariance=false, name=G]
+          TYPE_PARAMETER[fqName=null, isFullyLocal=true, isInVariance=false, isOutVariance=false, name=G]
             TYPE_REFERENCE
               USER_TYPE
                 REFERENCE_EXPRESSION[referencedName=Int]
@@ -51,15 +51,15 @@ PsiJetFileStubImpl[package=test]
         CLASS_BODY
           SECONDARY_CONSTRUCTOR
             VALUE_PARAMETER_LIST
-              VALUE_PARAMETER[fqName=null, hasDefaultValue=false, hasValOrVar=false, isMutable=false, name=x]
+              VALUE_PARAMETER[fqName=null, hasDefaultValue=false, hasValOrVar=false, isFullyLocal=true, isMutable=false, name=x]
                 TYPE_REFERENCE
                   USER_TYPE
                     REFERENCE_EXPRESSION[referencedName=T]
-              VALUE_PARAMETER[fqName=null, hasDefaultValue=false, hasValOrVar=false, isMutable=false, name=g]
+              VALUE_PARAMETER[fqName=null, hasDefaultValue=false, hasValOrVar=false, isFullyLocal=true, isMutable=false, name=g]
                 TYPE_REFERENCE
                   USER_TYPE
                     REFERENCE_EXPRESSION[referencedName=G]
-      CLASS[classId=test/SecondaryConstructors.Nested, fqName=test.SecondaryConstructors.Nested, isEnumEntry=false, isInterface=false, isLocal=false, isTopLevel=false, name=Nested, superNames=[]]
+      CLASS[classId=test/SecondaryConstructors.Nested, fqName=test.SecondaryConstructors.Nested, isEnumEntry=false, isFullyLocal=false, isInterface=false, isLocal=false, isTopLevel=false, name=Nested, superNames=[]]
         CLASS_BODY
           SECONDARY_CONSTRUCTOR
             MODIFIER_LIST[]
@@ -69,12 +69,12 @@ PsiJetFileStubImpl[package=test]
                     USER_TYPE
                       REFERENCE_EXPRESSION[referencedName=anno]
             VALUE_PARAMETER_LIST
-              VALUE_PARAMETER[fqName=null, hasDefaultValue=false, hasValOrVar=false, isMutable=false, name=z]
+              VALUE_PARAMETER[fqName=null, hasDefaultValue=false, hasValOrVar=false, isFullyLocal=true, isMutable=false, name=z]
                 TYPE_REFERENCE
                   USER_TYPE
                     REFERENCE_EXPRESSION[referencedName=Int]
           SECONDARY_CONSTRUCTOR
             MODIFIER_LIST[internal]
             VALUE_PARAMETER_LIST
-  CLASS[classId=test/anno, fqName=test.anno, isEnumEntry=false, isInterface=false, isLocal=false, isTopLevel=true, name=anno, superNames=[]]
+  CLASS[classId=test/anno, fqName=test.anno, isEnumEntry=false, isFullyLocal=false, isInterface=false, isLocal=false, isTopLevel=true, name=anno, superNames=[]]
     MODIFIER_LIST[annotation]

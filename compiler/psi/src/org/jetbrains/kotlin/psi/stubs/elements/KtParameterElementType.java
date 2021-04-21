@@ -41,7 +41,7 @@ public class KtParameterElementType extends KtStubElementType<KotlinParameterStu
         FqName fqName = psi.getFqName();
         StringRef fqNameRef = StringRef.fromString(fqName != null ? fqName.asString() : null);
         return new KotlinParameterStubImpl(
-                (StubElement<?>) parentStub, fqNameRef, StringRef.fromString(psi.getName()),
+                (StubElement<?>) parentStub, fqNameRef, psi.isFullyLocal(), StringRef.fromString(psi.getName()),
                 psi.isMutable(), psi.hasValOrVar(), psi.hasDefaultValue()
         );
     }
@@ -54,6 +54,8 @@ public class KtParameterElementType extends KtStubElementType<KotlinParameterStu
         dataStream.writeBoolean(stub.hasDefaultValue());
         FqName name = stub.getFqName();
         dataStream.writeName(name != null ? name.asString() : null);
+
+        dataStream.writeBoolean(stub.isFullyLocal());
     }
 
     @NotNull
@@ -64,8 +66,9 @@ public class KtParameterElementType extends KtStubElementType<KotlinParameterStu
         boolean hasValOrValNode = dataStream.readBoolean();
         boolean hasDefaultValue = dataStream.readBoolean();
         StringRef fqName = dataStream.readName();
+        boolean isFullyLocal = dataStream.readBoolean();
 
-        return new KotlinParameterStubImpl((StubElement<?>) parentStub, fqName, name, isMutable, hasValOrValNode, hasDefaultValue);
+        return new KotlinParameterStubImpl((StubElement<?>) parentStub, fqName, isFullyLocal, name, isMutable, hasValOrValNode, hasDefaultValue);
     }
 
     @Override

@@ -174,6 +174,7 @@ private class FunctionClsStubBuilder(
             parent,
             callableName.ref(),
             isTopLevel,
+            isFullyLocal = c.protoContainer?.classId?.isLocal != false,
             c.containerFqName.child(callableName),
             isExtension = functionProto.hasReceiver(),
             hasBlockBody = true,
@@ -244,7 +245,8 @@ private class PropertyClsStubBuilder(
             hasInitializer = false,
             isExtension = propertyProto.hasReceiver(),
             hasReturnTypeRef = true,
-            fqName = c.containerFqName.child(callableName)
+            fqName = c.containerFqName.child(callableName),
+            isFullyLocal = c.protoContainer?.classId?.isLocal == false,
         )
     }
 }

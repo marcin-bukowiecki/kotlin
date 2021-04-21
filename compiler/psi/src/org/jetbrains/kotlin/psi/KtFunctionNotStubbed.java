@@ -21,6 +21,8 @@ import com.intellij.psi.PsiElement;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.kotlin.KtNodeTypes;
+import org.jetbrains.kotlin.psi.psiUtil.ClassIdCalculator;
+import org.jetbrains.kotlin.psi.stubs.KotlinFunctionStub;
 
 import java.util.Collections;
 import java.util.List;
@@ -85,5 +87,10 @@ public abstract class KtFunctionNotStubbed extends KtTypeParameterListOwnerNotSt
     public boolean isLocal() {
         PsiElement parent = getParent();
         return !(parent instanceof KtFile || parent instanceof KtClassBody);
+    }
+
+    @Override
+    public boolean isFullyLocal() {
+        return ClassIdCalculator.isFullyLocal(this);
     }
 }

@@ -30,7 +30,8 @@ class KotlinTypeAliasStubImpl(
     private val name: StringRef?,
     private val qualifiedName: StringRef?,
     private val classId: ClassId?,
-    private val isTopLevel: Boolean
+    private val isTopLevel: Boolean,
+    private val isFullyLocal: Boolean,
 ) : KotlinStubBaseImpl<KtTypeAlias>(parent, KtStubElementTypes.TYPEALIAS), KotlinTypeAliasStub {
     override fun getName(): String? =
         StringRef.toString(name)
@@ -41,4 +42,6 @@ class KotlinTypeAliasStubImpl(
     override fun getClassId(): ClassId? = classId
 
     override fun isTopLevel(): Boolean = isTopLevel
+
+    override fun isFullyLocal(): Boolean = isFullyLocal
 }

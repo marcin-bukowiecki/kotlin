@@ -41,15 +41,19 @@ interface KotlinStubWithFqName<T : PsiNamedElement> : NamedStub<T> {
     fun getFqName(): FqName?
 }
 
-interface KotlinClassifierStub {
+interface KotlinNamedDeclarationStub<T : KtNamedDeclaration> : KotlinStubWithFqName<T> {
+    fun isFullyLocal(): Boolean
+}
+
+interface KotlinClassifierStub<T : KtClassLikeDeclaration> : KotlinNamedDeclarationStub<T> {
     fun getClassId(): ClassId?
 }
 
-interface KotlinTypeAliasStub : KotlinClassifierStub, KotlinStubWithFqName<KtTypeAlias> {
+interface KotlinTypeAliasStub : KotlinClassifierStub<KtTypeAlias>, KotlinStubWithFqName<KtTypeAlias> {
     fun isTopLevel(): Boolean
 }
 
-interface KotlinClassOrObjectStub<T : KtClassOrObject> : KotlinClassifierStub, KotlinStubWithFqName<T> {
+interface KotlinClassOrObjectStub<T : KtClassOrObject> : KotlinClassifierStub<T>, KotlinStubWithFqName<T> {
     fun isLocal(): Boolean
     fun getSuperNames(): List<String>
     fun isTopLevel(): Boolean
@@ -109,7 +113,7 @@ interface KotlinEnumEntrySuperclassReferenceExpressionStub : StubElement<KtEnumE
     fun getReferencedName(): String
 }
 
-interface KotlinParameterStub : KotlinStubWithFqName<KtParameter> {
+interface KotlinParameterStub : KotlinNamedDeclarationStub<KtParameter> {
     fun isMutable(): Boolean
     fun hasValOrVar(): Boolean
     fun hasDefaultValue(): Boolean
@@ -129,12 +133,14 @@ interface KotlinPropertyStub : KotlinCallableStubBase<KtProperty> {
     fun hasReturnTypeRef(): Boolean
 }
 
-interface KotlinCallableStubBase<TDeclaration : KtCallableDeclaration> : KotlinStubWithFqName<TDeclaration> {
+interface KotlinCallableStubBase<TDeclaration : KtCallableDeclaration> :
+    KotlinStubWithFqName<TDeclaration>,
+    KotlinNamedDeclarationStub<TDeclaration> {
     fun isTopLevel(): Boolean
     fun isExtension(): Boolean
 }
 
-interface KotlinTypeParameterStub : KotlinStubWithFqName<KtTypeParameter> {
+interface KotlinTypeParameterStub : KotlinNamedDeclarationStub<KtTypeParameter> {
     fun isInVariance(): Boolean
     fun isOutVariance(): Boolean
 }
@@ -158,6 +164,6 @@ interface KotlinTypeProjectionStub : StubElement<KtTypeProjection> {
 
 interface KotlinUserTypeStub : StubElement<KtUserType>
 
-interface KotlinScriptStub : KotlinStubWithFqName<KtScript> {
+interface KotlinScriptStub : KotlinNamedDeclarationStub<KtScript> {
     override fun getFqName(): FqName
 }

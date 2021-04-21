@@ -29,12 +29,13 @@ class KotlinPropertyStubImpl(
     private val name: StringRef?,
     private val isVar: Boolean,
     private val isTopLevel: Boolean,
+    private val isFullyLocal: Boolean,
     private val hasDelegate: Boolean,
     private val hasDelegateExpression: Boolean,
     private val hasInitializer: Boolean,
     private val isExtension: Boolean,
     private val hasReturnTypeRef: Boolean,
-    private val fqName: FqName?
+    private val fqName: FqName?,
 ) : KotlinStubBaseImpl<KtProperty>(parent, KtStubElementTypes.PROPERTY), KotlinPropertyStub {
 
     init {
@@ -55,4 +56,5 @@ class KotlinPropertyStubImpl(
     override fun isExtension() = isExtension
     override fun hasReturnTypeRef() = hasReturnTypeRef
     override fun getName() = StringRef.toString(name)
+    override fun isFullyLocal(): Boolean = isFullyLocal
 }

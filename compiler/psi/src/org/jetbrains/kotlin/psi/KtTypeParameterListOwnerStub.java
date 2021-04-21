@@ -20,13 +20,14 @@ import com.intellij.lang.ASTNode;
 import com.intellij.psi.stubs.IStubElementType;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.jetbrains.kotlin.psi.stubs.KotlinNamedDeclarationStub;
 import org.jetbrains.kotlin.psi.stubs.KotlinStubWithFqName;
 import org.jetbrains.kotlin.psi.stubs.elements.KtStubElementTypes;
 
 import java.util.Collections;
 import java.util.List;
 
-public abstract class KtTypeParameterListOwnerStub<T extends KotlinStubWithFqName<?>>
+public abstract class KtTypeParameterListOwnerStub<T extends KotlinNamedDeclarationStub<?>>
         extends KtNamedDeclarationStub<T> implements KtTypeParameterListOwner {
     public KtTypeParameterListOwnerStub(@NotNull T stub, @NotNull IStubElementType nodeType) {
         super(stub, nodeType);

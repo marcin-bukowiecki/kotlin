@@ -25,6 +25,7 @@ import org.jetbrains.annotations.Nullable;
 import org.jetbrains.kotlin.lexer.KtTokens;
 import org.jetbrains.kotlin.name.FqName;
 import org.jetbrains.kotlin.name.SpecialNames;
+import org.jetbrains.kotlin.psi.psiUtil.ClassIdCalculator;
 
 public class KtFunctionLiteral extends KtFunctionNotStubbed {
     public KtFunctionLiteral(@NotNull ASTNode node) {
@@ -81,6 +82,11 @@ public class KtFunctionLiteral extends KtFunctionNotStubbed {
     @Override
     public FqName getFqName() {
         return null;
+    }
+
+    @Override
+    public boolean isFullyLocal() {
+        return false;
     }
 
     @Override

@@ -38,7 +38,7 @@ class KtTypeAliasElementType(debugName: String) :
         val fqName = StringRef.fromString(psi.safeFqNameForLazyResolve()?.asString())
         val classId = parentStub?.let { createNestedClassId(it, psi) }
         val isTopLevel = psi.isTopLevel()
-        return KotlinTypeAliasStubImpl(parentStub, name, fqName, classId, isTopLevel)
+        return KotlinTypeAliasStubImpl(parentStub, name, fqName, classId, isTopLevel, psi.isFullyLocal)
     }
 
     private fun createNestedClassId(parentStub: StubElement<*>, typeAlias: KtTypeAlias): ClassId? {
@@ -58,6 +58,7 @@ class KtTypeAliasElementType(debugName: String) :
         dataStream.writeName(stub.getFqName()?.asString())
         StubUtils.serializeClassId(dataStream, stub.getClassId())
         dataStream.writeBoolean(stub.isTopLevel())
+        dataStream.writeBoolean(stub.isFullyLocal())
     }
 
     override fun deserialize(dataStream: StubInputStream, parentStub: StubElement<*>?): KotlinTypeAliasStub {
@@ -65,7 +66,8 @@ class KtTypeAliasElementType(debugName: String) :
         val fqName = dataStream.readName()
         val classId = StubUtils.deserializeClassId(dataStream)
         val isTopLevel = dataStream.readBoolean()
-        return KotlinTypeAliasStubImpl(parentStub, name, fqName, classId, isTopLevel)
+        val isFullyLocal = dataStream.readBoolean()
+        return KotlinTypeAliasStubImpl(parentStub, name, fqName, classId, isTopLevel, isFullyLocal)
     }
 
     override fun indexStub(stub: KotlinTypeAliasStub, sink: IndexSink) {

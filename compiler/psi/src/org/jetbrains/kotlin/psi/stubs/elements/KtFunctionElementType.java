@@ -47,7 +47,7 @@ public class KtFunctionElementType extends KtStubElementType<KotlinFunctionStub,
         boolean hasBlockBody = psi.hasBlockBody();
         boolean hasBody = psi.hasBody();
         return new KotlinFunctionStubImpl(
-                (StubElement<?>) parentStub, StringRef.fromString(psi.getName()), isTopLevel, fqName,
+                (StubElement<?>) parentStub, StringRef.fromString(psi.getName()), isTopLevel, psi.isFullyLocal(), fqName,
                 isExtension, hasBlockBody, hasBody, psi.hasTypeParameterListBeforeFunctionName(),
                 psi.mayHaveContract()
         );
@@ -57,6 +57,7 @@ public class KtFunctionElementType extends KtStubElementType<KotlinFunctionStub,
     public void serialize(@NotNull KotlinFunctionStub stub, @NotNull StubOutputStream dataStream) throws IOException {
         dataStream.writeName(stub.getName());
         dataStream.writeBoolean(stub.isTopLevel());
+        dataStream.writeBoolean(stub.isFullyLocal());
 
         FqName fqName = stub.getFqName();
         dataStream.writeName(fqName != null ? fqName.asString() : null);
@@ -73,6 +74,7 @@ public class KtFunctionElementType extends KtStubElementType<KotlinFunctionStub,
     public KotlinFunctionStub deserialize(@NotNull StubInputStream dataStream, StubElement parentStub) throws IOException {
         StringRef name = dataStream.readName();
         boolean isTopLevel = dataStream.readBoolean();
+        boolean isFullyLocal = dataStream.readBoolean();
 
         StringRef fqNameAsString = dataStream.readName();
         FqName fqName = fqNameAsString != null ? new FqName(fqNameAsString.toString()) : null;
@@ -84,7 +86,7 @@ public class KtFunctionElementType extends KtStubElementType<KotlinFunctionStub,
         boolean mayHaveContract = dataStream.readBoolean();
 
         return new KotlinFunctionStubImpl(
-                (StubElement<?>) parentStub, name, isTopLevel, fqName, isExtension, hasBlockBody, hasBody,
+                (StubElement<?>) parentStub, name, isTopLevel, isFullyLocal, fqName, isExtension, hasBlockBody, hasBody,
                 hasTypeParameterListBeforeFunctionName, mayHaveContract
         );
     }

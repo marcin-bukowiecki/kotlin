@@ -45,7 +45,7 @@ public class KtPropertyElementType extends KtStubElementType<KotlinPropertyStub,
 
         return new KotlinPropertyStubImpl(
                 (StubElement<?>) parentStub, StringRef.fromString(psi.getName()),
-                psi.isVar(), psi.isTopLevel(), psi.hasDelegate(),
+                psi.isVar(), psi.isTopLevel(), psi.isFullyLocal(), psi.hasDelegate(),
                 psi.hasDelegateExpression(), psi.hasInitializer(),
                 psi.getReceiverTypeReference() != null, psi.getTypeReference() != null,
                 KtPsiUtilKt.safeFqNameForLazyResolve(psi)
@@ -57,6 +57,7 @@ public class KtPropertyElementType extends KtStubElementType<KotlinPropertyStub,
         dataStream.writeName(stub.getName());
         dataStream.writeBoolean(stub.isVar());
         dataStream.writeBoolean(stub.isTopLevel());
+        dataStream.writeBoolean(stub.isFullyLocal());
         dataStream.writeBoolean(stub.hasDelegate());
         dataStream.writeBoolean(stub.hasDelegateExpression());
         dataStream.writeBoolean(stub.hasInitializer());
@@ -73,6 +74,7 @@ public class KtPropertyElementType extends KtStubElementType<KotlinPropertyStub,
         StringRef name = dataStream.readName();
         boolean isVar = dataStream.readBoolean();
         boolean isTopLevel = dataStream.readBoolean();
+        boolean isFullyLocal = dataStream.readBoolean();
         boolean hasDelegate = dataStream.readBoolean();
         boolean hasDelegateExpression = dataStream.readBoolean();
         boolean hasInitializer = dataStream.readBoolean();
@@ -82,8 +84,9 @@ public class KtPropertyElementType extends KtStubElementType<KotlinPropertyStub,
         StringRef fqNameAsString = dataStream.readName();
         FqName fqName = fqNameAsString != null ? new FqName(fqNameAsString.toString()) : null;
 
+
         return new KotlinPropertyStubImpl(
-                (StubElement<?>) parentStub, name, isVar, isTopLevel, hasDelegate, hasDelegateExpression, hasInitializer,
+                (StubElement<?>) parentStub, name, isVar, isTopLevel,isFullyLocal, hasDelegate, hasDelegateExpression, hasInitializer,
                 hasReceiverTypeRef, hasReturnTypeRef, fqName
         );
     }

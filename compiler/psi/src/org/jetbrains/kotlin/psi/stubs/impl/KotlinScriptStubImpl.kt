@@ -31,4 +31,6 @@ class KotlinScriptStubImpl(
     override fun getName(): String = getFqName().shortName().asString()
 
     override fun getFqName(): FqName = FqName(StringRef.toString(_fqName)!!)
+
+    override fun isFullyLocal(): Boolean = false
 }

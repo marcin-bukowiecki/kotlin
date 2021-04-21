@@ -65,7 +65,7 @@ public class KtClassElementType extends KtStubElementType<KotlinClassStub, KtCla
                 StringRef.fromString(fqName != null ? fqName.asString() : null), psi.getClassId(),
                 StringRef.fromString(psi.getName()),
                 Utils.INSTANCE.wrapStrings(superNames),
-                psi.isInterface(), isEnumEntry, psi.isLocal(), psi.isTopLevel()
+                psi.isInterface(), isEnumEntry, psi.isLocal(), psi.isFullyLocal(), psi.isTopLevel()
         );
     }
 
@@ -81,6 +81,7 @@ public class KtClassElementType extends KtStubElementType<KotlinClassStub, KtCla
         dataStream.writeBoolean(stub.isInterface());
         dataStream.writeBoolean(stub.isEnumEntry());
         dataStream.writeBoolean(stub.isLocal());
+        dataStream.writeBoolean(stub.isFullyLocal());
         dataStream.writeBoolean(stub.isTopLevel());
 
         List<String> superNames = stub.getSuperNames();
@@ -101,6 +102,7 @@ public class KtClassElementType extends KtStubElementType<KotlinClassStub, KtCla
         boolean isTrait = dataStream.readBoolean();
         boolean isEnumEntry = dataStream.readBoolean();
         boolean isLocal = dataStream.readBoolean();
+        boolean isFullyLocal = dataStream.readBoolean();
         boolean isTopLevel = dataStream.readBoolean();
 
         int superCount = dataStream.readVarInt();
@@ -111,7 +113,7 @@ public class KtClassElementType extends KtStubElementType<KotlinClassStub, KtCla
 
         return new KotlinClassStubImpl(
                 getStubType(isEnumEntry), (StubElement<?>) parentStub, qualifiedName,classId, name, superNames,
-                isTrait, isEnumEntry, isLocal, isTopLevel
+                isTrait, isEnumEntry, isLocal, isFullyLocal, isTopLevel
         );
     }
 

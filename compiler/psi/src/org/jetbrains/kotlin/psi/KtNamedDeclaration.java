@@ -28,4 +28,10 @@ public interface KtNamedDeclaration extends KtDeclaration, PsiNameIdentifierOwne
 
     @Nullable
     FqName getFqName();
+
+    /**
+     * @return <code>true</code> if declaration can be accessed by qualified name (i.e it has classId or callableId);
+     * otherwise return <code>false</code>.
+     */
+    boolean isFullyLocal();
 }

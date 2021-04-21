@@ -36,6 +36,7 @@ class KotlinClassStubImpl(
     private val isInterface: Boolean,
     private val isEnumEntry: Boolean,
     private val isLocal: Boolean,
+    private val isFullyLocal: Boolean,
     private val isTopLevel: Boolean,
 ) : KotlinStubBaseImpl<KtClass>(parent, type), KotlinClassStub {
 
@@ -60,4 +61,6 @@ class KotlinClassStubImpl(
     override fun getClassId(): ClassId? = classId
 
     override fun isTopLevel() = isTopLevel
+
+    override fun isFullyLocal(): Boolean = isFullyLocal
 }

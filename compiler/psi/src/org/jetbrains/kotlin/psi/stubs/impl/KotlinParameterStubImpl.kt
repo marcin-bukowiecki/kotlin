@@ -27,6 +27,7 @@ import com.intellij.psi.PsiElement
 class KotlinParameterStubImpl(
     parent: StubElement<out PsiElement>?,
     private val fqName: StringRef?,
+    private val isFullyLocal: Boolean,
     private val name: StringRef?,
     private val isMutable: Boolean,
     private val hasValOrVar: Boolean,
@@ -39,6 +40,8 @@ class KotlinParameterStubImpl(
     override fun getFqName(): FqName? {
         return if (fqName != null) FqName(fqName.string) else null
     }
+
+    override fun isFullyLocal(): Boolean = isFullyLocal
 
     override fun isMutable() = isMutable
     override fun hasValOrVar() = hasValOrVar

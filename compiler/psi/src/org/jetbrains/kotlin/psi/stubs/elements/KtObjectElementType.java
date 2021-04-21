@@ -48,7 +48,7 @@ public class KtObjectElementType extends KtStubElementType<KotlinObjectStub, KtO
         List<String> superNames = KtPsiUtilKt.getSuperNames(psi);
         return new KotlinObjectStubImpl(
                 (StubElement<?>) parentStub, StringRef.fromString(name), fqName, psi.getClassId(), Utils.INSTANCE.wrapStrings(superNames),
-                psi.isTopLevel(), psi.isCompanion(), psi.isLocal(), psi.isObjectLiteral()
+                psi.isTopLevel(), psi.isCompanion(), psi.isLocal(), psi.isFullyLocal(), psi.isObjectLiteral()
         );
     }
 
@@ -64,6 +64,7 @@ public class KtObjectElementType extends KtStubElementType<KotlinObjectStub, KtO
         dataStream.writeBoolean(stub.isTopLevel());
         dataStream.writeBoolean(stub.isCompanion());
         dataStream.writeBoolean(stub.isLocal());
+        dataStream.writeBoolean(stub.isFullyLocal());
         dataStream.writeBoolean(stub.isObjectLiteral());
 
         List<String> superNames = stub.getSuperNames();
@@ -86,6 +87,7 @@ public class KtObjectElementType extends KtStubElementType<KotlinObjectStub, KtO
         boolean isTopLevel = dataStream.readBoolean();
         boolean isCompanion = dataStream.readBoolean();
         boolean isLocal = dataStream.readBoolean();
+        boolean isFullyLocal = dataStream.readBoolean();
         boolean isObjectLiteral = dataStream.readBoolean();
 
         int superCount = dataStream.readVarInt();
@@ -95,7 +97,7 @@ public class KtObjectElementType extends KtStubElementType<KotlinObjectStub, KtO
         }
 
         return new KotlinObjectStubImpl(
-                (StubElement<?>) parentStub, name, fqName, classId, superNames, isTopLevel, isCompanion, isLocal, isObjectLiteral
+                (StubElement<?>) parentStub, name, fqName, classId, superNames, isTopLevel, isCompanion, isLocal, isFullyLocal, isObjectLiteral
         );
     }
 

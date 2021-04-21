@@ -42,4 +42,39 @@ internal object ClassIdCalculator {
         )
         return ClassId(ktFile.packageFqName, relativeClassName, /*local=*/false)
     }
+
+    /**
+     * @see KtNamedDeclaration.isFullyLocal for semantics
+     */
+    @JvmStatic
+    fun isFullyLocal(declaration: KtNamedDeclaration): Boolean {
+        var element: PsiElement? = declaration.parent
+
+        when (declaration) {
+            is KtTypeParameter -> {
+                return true
+            }
+            is KtParameter -> {
+                if (!declaration.hasValOrVar()) return true
+                element = declaration.containingClassOrObject
+            }
+        }
+
+        while (element != null) {
+            when (element) {
+                is KtEnumEntry -> {
+                    return true
+                }
+                is KtClassOrObject -> {}
+                is KtFile -> {
+                    break
+                }
+                is KtDeclaration -> {
+                    return true
+                }
+            }
+            element = element.parent
+        }
+        return false
+    }
 }

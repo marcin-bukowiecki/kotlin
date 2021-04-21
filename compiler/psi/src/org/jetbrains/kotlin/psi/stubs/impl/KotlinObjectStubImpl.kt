@@ -35,6 +35,7 @@ class KotlinObjectStubImpl(
     private val isTopLevel: Boolean,
     private val isDefault: Boolean,
     private val isLocal: Boolean,
+    private val isFullyLocal: Boolean,
     private val isObjectLiteral: Boolean,
 ) : KotlinStubBaseImpl<KtObjectDeclaration>(parent, KtStubElementTypes.OBJECT_DECLARATION), KotlinObjectStub {
     override fun getFqName() = fqName
@@ -45,4 +46,5 @@ class KotlinObjectStubImpl(
     override fun isObjectLiteral() = isObjectLiteral
     override fun isLocal() = isLocal
     override fun getClassId(): ClassId? = classId
+    override fun isFullyLocal(): Boolean = isFullyLocal
 }

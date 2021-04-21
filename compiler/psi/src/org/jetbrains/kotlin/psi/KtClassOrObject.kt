@@ -99,6 +99,8 @@ abstract class KtClassOrObject :
 
     override fun isLocal(): Boolean = stub?.isLocal() ?: KtPsiUtil.isLocal(this)
 
+    override fun isFullyLocal(): Boolean = stub?.isFullyLocal() ?: ClassIdCalculator.isFullyLocal(this)
+
     override fun getDeclarations(): List<KtDeclaration> = getBody()?.declarations.orEmpty()
 
     override fun getPresentation(): ItemPresentation? = ItemPresentationProviders.getItemPresentation(this)
