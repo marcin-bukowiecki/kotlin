@@ -25,6 +25,7 @@ import org.jetbrains.kotlin.resolve.descriptorUtil.builtIns
 import org.jetbrains.kotlin.storage.LockBasedStorageManager
 import org.jetbrains.kotlin.types.KotlinType
 import org.jetbrains.kotlin.utils.KotlinExceptionWithAttachments
+import kotlin.math.max
 
 
 class JvmRuntimeTypes(
@@ -188,6 +189,6 @@ class JvmRuntimeTypes(
             else -> if (isMutable) mutablePropertyReferences else propertyReferences
         }
 
-        return classes[arity].defaultType
+        return classes[max(arity, 0)].defaultType
     }
 }
