@@ -88,16 +88,6 @@ private object XcodeEnvironment {
         }
 
     val sign: String? get() = System.getenv("EXPANDED_CODE_SIGN_IDENTITY")
-
-    override fun toString() = """
-        XcodeEnvironment [
-            CONFIGURATION=${System.getenv("CONFIGURATION")}
-            SDK_NAME=${System.getenv("SDK_NAME")}
-            EXPANDED_CODE_SIGN_IDENTITY=${System.getenv("EXPANDED_CODE_SIGN_IDENTITY")}
-            TARGET_BUILD_DIR=${System.getenv("TARGET_BUILD_DIR")}
-            FRAMEWORKS_FOLDER_PATH=${System.getenv("FRAMEWORKS_FOLDER_PATH")}
-        ]
-    """.trimIndent()
 }
 
 internal fun Project.registerAssembleAppleFrameworkTask(framework: Framework) {
