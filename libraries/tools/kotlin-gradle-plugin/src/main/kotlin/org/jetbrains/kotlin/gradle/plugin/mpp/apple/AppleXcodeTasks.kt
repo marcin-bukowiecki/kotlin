@@ -5,6 +5,7 @@
 
 package org.jetbrains.kotlin.gradle.plugin.mpp.apple
 
+import org.gradle.api.NamedDomainObjectCollection
 import org.gradle.api.Project
 import org.gradle.api.Task
 import org.gradle.api.plugins.BasePlugin
@@ -159,10 +160,10 @@ internal fun Project.registerEmbedAndSignAppleFrameworkTask() {
         task.group = "build"
         task.description = "Embed and sign all frameworks as requested by Xcode's environment variables"
 
-        val appleFrameworks: Collection<KotlinNativeTarget> = multiplatformExtensionOrNull?.targets
-            ?.withType(KotlinNativeTarget::class.java)
-            ?.matching { it.konanTarget == envTarget }
-            ?: emptyList()
+        val appleTargets: NamedDomainObjectCollection<KotlinNativeTarget>? =
+            multiplatformExtensionOrNull?.targets
+                ?.withType(KotlinNativeTarget::class.java)
+                ?.matching { it.konanTarget == envTarget }
 
         task.dependsOn(UMBRELLA_ASSEMBLE_APPLE_FRAMEWORK)
         task.inputs.apply {
@@ -172,24 +173,32 @@ internal fun Project.registerEmbedAndSignAppleFrameworkTask() {
             property("sign", envSign)
         }
 
-        task.onlyIf { appleFrameworks.isNotEmpty() }
+        task.onlyIf { !appleTargets.isNullOrEmpty() }
 
-        task.from(
-            appleFrameworks.map {
-                val fileName = it.binaries.getFramework(envBuildType).outputFile.name
-                appleFrameworkDir(envFrameworkSearchDir).resolve(fileName)
-            }.toTypedArray()
-        )
+        task.from(appleFrameworkDir(envFrameworkSearchDir)) {
+            val frameworkDirs = appleTargets
+                ?.flatMap { target ->
+                    target.binaries.withType(Framework::class.java).matching { f -> f.buildType == envBuildType }
+                }
+                ?.map { framework ->
+                    framework.outputFile.name + "/**"
+                }
+                ?: emptyList()
+            it.include(frameworkDirs)
+        }
+
         task.into(envEmbeddedFrameworksDir)
 
         if (envSign != null) {
             task.doLast {
-                appleFrameworks
-                    .map {
-                        val outputFile = it.binaries.getFramework(envBuildType).outputFile
-                        envEmbeddedFrameworksDir.resolve(outputFile.name).resolve(outputFile.nameWithoutExtension)
+                appleTargets
+                    ?.flatMap {
+                        it.binaries.withType(Framework::class.java).matching { f -> f.buildType == envBuildType }
                     }
-                    .forEach { binaryFile ->
+                    ?.map {
+                        envEmbeddedFrameworksDir.resolve(it.outputFile.name).resolve(it.outputFile.nameWithoutExtension)
+                    }
+                    ?.forEach { binaryFile ->
                         exec {
                             it.commandLine("codesign", "--force", "--sign", envSign, "--", binaryFile)
                         }
