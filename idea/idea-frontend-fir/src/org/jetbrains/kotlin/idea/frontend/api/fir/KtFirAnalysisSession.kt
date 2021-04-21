@@ -70,7 +70,7 @@ private constructor(
 
     override val subtypingComponentImpl = KtFirSubtypingComponent(this, token)
 
-    override fun createContextDependentCopy(originalKtFile: KtFile, fakeKtElement: KtElement): KtAnalysisSession {
+    override fun createContextDependentCopy(originalKtFile: KtFile, copiedKtElement: KtElement): KtAnalysisSession {
         check(mode == AnalysisSessionMode.DEFAULT) {
             "Cannot create context-dependent copy of KtAnalysis session from a context dependent one"
         }
@@ -78,7 +78,7 @@ private constructor(
         val contextResolveState = LowLevelFirApiFacadeForDependentCopy.getResolveStateForDependedCopy(
             originalState = firResolveState,
             originalKtFile = originalKtFile,
-            copiedKtElement = fakeKtElement
+            copiedKtElement = copiedKtElement
         )
 
         return KtFirAnalysisSession(

@@ -5,7 +5,6 @@
 
 package org.jetbrains.kotlin.idea.fir.low.level.api.api
 
-import org.jetbrains.annotations.TestOnly
 import com.intellij.openapi.project.Project
 import org.jetbrains.kotlin.fir.*
 import org.jetbrains.kotlin.fir.analysis.diagnostics.FirPsiDiagnostic
@@ -34,8 +33,6 @@ abstract class FirModuleResolveState {
 
     internal abstract fun getFirFile(ktFile: KtFile): FirFile
 
-    internal abstract fun isFirFileBuilt(ktFile: KtFile): Boolean
-
     internal abstract fun getDiagnostics(element: KtElement, filter: DiagnosticCheckerFilter): List<FirPsiDiagnostic<*>>
 
     internal abstract fun collectDiagnosticsForFile(ktFile: KtFile, filter: DiagnosticCheckerFilter): Collection<FirPsiDiagnostic<*>>
@@ -55,14 +52,6 @@ abstract class FirModuleResolveState {
             else -> action(declaration)
         }
     }
-
-    @TestOnly
-    internal abstract fun getBuiltFirFileOrNull(ktFile: KtFile): FirFile?
-
-    @InternalForInline
-    abstract fun findNonLocalSourceFirDeclaration(
-        ktDeclaration: KtDeclaration,
-    ): FirDeclaration
 
     @InternalForInline
     abstract fun findSourceFirDeclaration(

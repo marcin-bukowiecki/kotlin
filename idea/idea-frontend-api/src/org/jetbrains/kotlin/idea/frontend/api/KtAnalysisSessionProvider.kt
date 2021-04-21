@@ -10,7 +10,6 @@ import com.intellij.openapi.components.service
 import com.intellij.openapi.progress.ProgressIndicator
 import com.intellij.openapi.progress.Task
 import org.jetbrains.kotlin.idea.frontend.api.tokens.ReadActionConfinementValidityTokenFactory
-import org.jetbrains.kotlin.idea.frontend.api.tokens.ValidityToken
 import org.jetbrains.kotlin.idea.frontend.api.tokens.ValidityTokenFactory
 import org.jetbrains.kotlin.idea.util.application.runReadAction
 import org.jetbrains.kotlin.psi.KtElement
@@ -32,9 +31,9 @@ abstract class KtAnalysisSessionProvider {
     abstract fun getAnalysisSession(contextElement: KtElement, factory: ValidityTokenFactory): KtAnalysisSession
 
     @InvalidWayOfUsingAnalysisSession
-    inline fun <R> analyseInFakeAnalysisSession(originalFile: KtFile, fakeExpresion: KtElement, action: KtAnalysisSession.() -> R): R {
+    inline fun <R> analyseInFakeAnalysisSession(originalFile: KtFile, copiedExpresion: KtElement, action: KtAnalysisSession.() -> R): R {
         val fakeAnalysisSession = getAnalysisSession(originalFile, ReadActionConfinementValidityTokenFactory)
-            .createContextDependentCopy(originalFile, fakeExpresion)
+            .createContextDependentCopy(originalFile, copiedExpresion)
         return analyse(fakeAnalysisSession, ReadActionConfinementValidityTokenFactory, action)
     }
 
@@ -82,8 +81,8 @@ inline fun <R> analyseWithCustomToken(
     contextElement.project.service<KtAnalysisSessionProvider>().analyse(contextElement, tokenFactory, action)
 
 @OptIn(InvalidWayOfUsingAnalysisSession::class)
-inline fun <R> analyseInFakeAnalysisSession(originalFile: KtFile, fakeExpresion: KtElement, action: KtAnalysisSession.() -> R): R =
-    originalFile.project.service<KtAnalysisSessionProvider>().analyseInFakeAnalysisSession(originalFile, fakeExpresion, action)
+inline fun <R> analyseInFakeAnalysisSession(originalFile: KtFile, copiedExpression: KtElement, action: KtAnalysisSession.() -> R): R =
+    originalFile.project.service<KtAnalysisSessionProvider>().analyseInFakeAnalysisSession(originalFile, copiedExpression, action)
 
 /**
  * Execute given [action] in [KtAnalysisSession] context like [analyse] does but execute it in read action

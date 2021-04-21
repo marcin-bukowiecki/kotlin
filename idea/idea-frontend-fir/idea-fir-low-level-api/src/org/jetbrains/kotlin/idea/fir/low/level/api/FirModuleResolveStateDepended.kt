@@ -59,13 +59,8 @@ internal class FirModuleResolveStateDepended(
     override fun getFirFile(ktFile: KtFile): FirFile =
         originalState.getFirFile(ktFile)
 
-    override fun isFirFileBuilt(ktFile: KtFile): Boolean {
-        error("Should not be called in depended state")
-    }
-
-    override fun <D : FirDeclaration> resolvedFirToPhase(declaration: D, toPhase: FirResolvePhase): D {
-        return originalState.resolvedFirToPhase(declaration, toPhase)
-    }
+    override fun <D : FirDeclaration> resolvedFirToPhase(declaration: D, toPhase: FirResolvePhase): D =
+        originalState.resolvedFirToPhase(declaration, toPhase)
 
     override fun getFirFile(declaration: FirDeclaration, cache: ModuleFileCache): FirFile? {
         val ktFile = declaration.containingKtFileIfAny ?: return null
@@ -74,32 +69,19 @@ internal class FirModuleResolveStateDepended(
         return null
     }
 
-    override fun getDiagnostics(element: KtElement, filter: DiagnosticCheckerFilter): List<FirPsiDiagnostic<*>> {
-        error("Diagnostics should not be retrieved in depended state")
-    }
+    override fun getDiagnostics(element: KtElement, filter: DiagnosticCheckerFilter): List<FirPsiDiagnostic<*>> =
+        TODO("Diagnostics are not implemented for depended state")
 
-    override fun collectDiagnosticsForFile(ktFile: KtFile, filter: DiagnosticCheckerFilter): Collection<FirPsiDiagnostic<*>> {
-        error("Diagnostics should not be retrieved in depended state")
-    }
+    override fun collectDiagnosticsForFile(ktFile: KtFile, filter: DiagnosticCheckerFilter): Collection<FirPsiDiagnostic<*>> =
+        TODO("Diagnostics are not implemented for depended state")
 
     @OptIn(InternalForInline::class)
-    override fun findNonLocalSourceFirDeclaration(ktDeclaration: KtDeclaration): FirDeclaration {
-        error("Should not be used in depended state")
-    }
+    override fun findSourceFirDeclaration(ktDeclaration: KtLambdaExpression): FirDeclaration =
+        originalState.findSourceFirDeclaration(ktDeclaration)
 
     @OptIn(InternalForInline::class)
-    override fun findSourceFirDeclaration(ktDeclaration: KtDeclaration): FirDeclaration {
-        return originalState.findSourceFirDeclaration(ktDeclaration)
-    }
-
-    @OptIn(InternalForInline::class)
-    override fun findSourceFirDeclaration(ktDeclaration: KtLambdaExpression): FirDeclaration {
-        error("Should not be used in depended state")
-    }
-
-    override fun getBuiltFirFileOrNull(ktFile: KtFile): FirFile? {
-        error("Should not be used in depended state")
-    }
+    override fun findSourceFirDeclaration(ktDeclaration: KtDeclaration): FirDeclaration =
+        originalState.findSourceFirDeclaration(ktDeclaration)
 
     override fun getTowerDataContextForElement(element: KtElement): FirTowerDataContext? =
         collector.getClosestAvailableParentContext(element) ?: originalState.getTowerDataContextForElement(element)

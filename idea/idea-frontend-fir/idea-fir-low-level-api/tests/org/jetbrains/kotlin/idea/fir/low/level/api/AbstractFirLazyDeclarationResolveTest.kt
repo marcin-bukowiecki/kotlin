@@ -34,6 +34,7 @@ abstract class AbstractFirLazyDeclarationResolveTest : KotlinLightCodeInsightFix
         val declarationToResolve = lazyDeclarations.firstOrNull { it.name?.lowercase() == "resolveme" }
             ?: error("declaration with name `resolveMe` was not found")
         resolveWithClearCaches(ktFile) { firModuleResolveState ->
+            check(firModuleResolveState is FirModuleResolveStateImpl)
             val rendered = declarationToResolve.withFirDeclaration(
                 firModuleResolveState,
                 FirResolvePhase.BODY_RESOLVE
