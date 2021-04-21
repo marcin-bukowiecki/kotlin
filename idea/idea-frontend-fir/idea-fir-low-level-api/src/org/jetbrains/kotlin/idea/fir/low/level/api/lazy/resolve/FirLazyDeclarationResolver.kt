@@ -228,7 +228,7 @@ internal class FirLazyDeclarationResolver(
     private fun FirDeclaration.getNonLocalDeclarationToResolve(provider: FirProvider, moduleFileCache: ModuleFileCache): FirDeclaration {
         if (this is FirFile) return this
         val ktDeclaration = psi as? KtDeclaration ?: error("FirDeclaration should have a PSI of type KtDeclaration")
-        if (!KtPsiUtil.isLocal(ktDeclaration)) return this
+        if (ktDeclaration is KtNamedDeclaration && !ktDeclaration.isFullyLocal) return this
         val nonLocalPsi = ktDeclaration.getNonLocalContainingOrThisDeclaration()
             ?: error("Container for local declaration cannot be null")
         return nonLocalPsi.findSourceNonLocalFirDeclaration(firFileBuilder, provider.symbolProvider, moduleFileCache)

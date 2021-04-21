@@ -22,7 +22,8 @@ internal object FileStructureUtil {
         ktDeclaration !is KtClassOrObject && ktDeclaration !is KtDeclarationWithBody && ktDeclaration !is KtProperty && ktDeclaration !is KtTypeAlias -> false
         ktDeclaration is KtEnumEntry -> false
         ktDeclaration.containingClassOrObject is KtEnumEntry -> false
-        else -> !KtPsiUtil.isLocal(ktDeclaration)
+        ktDeclaration is KtNamedDeclaration -> !ktDeclaration.isFullyLocal
+        else -> false
     }
 
     fun replaceDeclaration(firFile: FirFile, from: FirCallableDeclaration<*>, to: FirCallableDeclaration<*>) {

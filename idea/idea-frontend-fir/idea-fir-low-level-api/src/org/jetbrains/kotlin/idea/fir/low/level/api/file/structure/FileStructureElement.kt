@@ -19,7 +19,6 @@ import org.jetbrains.kotlin.idea.fir.low.level.api.file.builder.LockProvider
 import org.jetbrains.kotlin.idea.fir.low.level.api.file.builder.ModuleFileCache
 import org.jetbrains.kotlin.idea.fir.low.level.api.lazy.resolve.FirLazyDeclarationResolver
 import org.jetbrains.kotlin.idea.fir.low.level.api.providers.FirIdeProvider
-import org.jetbrains.kotlin.idea.fir.low.level.api.util.hasFqName
 import org.jetbrains.kotlin.psi.*
 
 internal sealed class FileStructureElement(val firFile: FirFile, protected val lockProvider: LockProvider<FirFile>) {
@@ -161,14 +160,14 @@ internal class NonReanalyzableDeclarationStructureElement(
         private val recorder = object : FirElementsRecorder() {
             override fun visitProperty(property: FirProperty, data: MutableMap<KtElement, FirElement>) {
                 val psi = property.psi as? KtProperty ?: return super.visitProperty(property, data)
-                if (!FileElementFactory.isReanalyzableContainer(psi) || !psi.hasFqName()) {
+                if (!FileElementFactory.isReanalyzableContainer(psi) || psi.isFullyLocal) {
                     super.visitProperty(property, data)
                 }
             }
 
             override fun visitSimpleFunction(simpleFunction: FirSimpleFunction, data: MutableMap<KtElement, FirElement>) {
                 val psi = simpleFunction.psi as? KtNamedFunction ?: return super.visitSimpleFunction(simpleFunction, data)
-                if (!FileElementFactory.isReanalyzableContainer(psi) || !psi.hasFqName()) {
+                if (!FileElementFactory.isReanalyzableContainer(psi) || psi.isFullyLocal) {
                     super.visitSimpleFunction(simpleFunction, data)
                 }
             }
