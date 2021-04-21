@@ -36,10 +36,6 @@ private object XcodeEnvironment {
 
             return configuration.toNativeBuildType()
                 ?: System.getenv("KOTLIN_FRAMEWORK_BUILD_TYPE")?.toNativeBuildType()
-                ?: throw IllegalArgumentException(
-                    "Unexpected environment variable 'CONFIGURATION': $configuration. " +
-                            "Use 'KOTLIN_FRAMEWORK_BUILD_TYPE' debug/release for specifying build type."
-                )
         }
 
     val target: KonanTarget?
@@ -69,7 +65,7 @@ private object XcodeEnvironment {
                     Architecture.ARM64 -> KonanTarget.TVOS_SIMULATOR_ARM64
                     else -> KonanTarget.TVOS_X64
                 }
-                else -> throw IllegalArgumentException("Unexpected environment variable 'SDK_NAME': $sdk")
+                else -> null
             }
         }
 
@@ -91,7 +87,7 @@ private object XcodeEnvironment {
 }
 
 internal fun Project.registerAssembleAppleFrameworkTask(framework: Framework) {
-    if (!framework.konanTarget.family.isAppleFamily) return
+    if (!framework.konanTarget.family.isAppleFamily || !framework.konanTarget.enabledOnCurrentHost) return
 
     val frameworkBuildType = framework.buildType
     val frameworkTarget = framework.target
@@ -107,12 +103,15 @@ internal fun Project.registerAssembleAppleFrameworkTask(framework: Framework) {
     val envTarget = XcodeEnvironment.target
     val envFrameworkSearchDir = XcodeEnvironment.frameworkSearchDir
 
-    if (
-        !framework.konanTarget.enabledOnCurrentHost
-        || frameworkBuildType != envBuildType
-        || frameworkTarget.konanTarget != envTarget
-        || envFrameworkSearchDir == null
-    ) return
+    if (envBuildType == null || envTarget == null || envFrameworkSearchDir == null) {
+        logger.debug(
+            "Not registering $frameworkTaskName, since not called from Xcode " +
+                    "('SDK_NAME' and 'CONFIGURATION' not provided)"
+        )
+        return
+    }
+
+    if (frameworkBuildType != envBuildType || frameworkTarget.konanTarget != envTarget) return
 
     umbrellaAssembleAppleFrameworkTask.dependsOn(
         registerTask<Copy>(frameworkTaskName) { task ->
