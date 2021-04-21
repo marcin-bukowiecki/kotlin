@@ -104,10 +104,18 @@ internal fun Project.registerAssembleAppleFrameworkTask(framework: Framework) {
     val envFrameworkSearchDir = XcodeEnvironment.frameworkSearchDir
 
     if (envBuildType == null || envTarget == null || envFrameworkSearchDir == null) {
-        logger.debug(
-            "Not registering $frameworkTaskName, since not called from Xcode " +
-                    "('SDK_NAME' and 'CONFIGURATION' not provided)"
-        )
+        val envConfiguration = System.getenv("CONFIGURATION")
+        if (envTarget != null && envConfiguration != null) {
+            logger.debug(
+                "Unable to detect Kotlin framework build type for CONFIGURATION=$envConfiguration automatically. " +
+                        "Specify 'KOTLIN_FRAMEWORK_BUILD_TYPE' to 'debug' or 'release'"
+            )
+        } else {
+            logger.debug(
+                "Not registering $frameworkTaskName, since not called from Xcode " +
+                        "('SDK_NAME' and 'CONFIGURATION' not provided)"
+            )
+        }
         return
     }
 
