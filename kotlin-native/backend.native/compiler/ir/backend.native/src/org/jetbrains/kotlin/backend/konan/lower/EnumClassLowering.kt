@@ -35,37 +35,16 @@ import org.jetbrains.kotlin.name.Name
 private class EnumSyntheticFunctionsBuilder(val context: Context) {
     fun IrBuilderWithScope.enumValues(enumClass: IrClass): IrExpression {
         val loweredEnum = this@EnumSyntheticFunctionsBuilder.context.specialDeclarationsFactory.getLoweredEnum(enumClass)
-        val companion = enumClass.companionObject()
-        val values = loweredEnum.getValuesField(startOffset, endOffset)
-        return if (companion == null) {
-            irCall(genericValuesSymbol, listOf(enumClass.defaultType)).apply {
-                putValueArgument(0, values)
-            }
-        } else irBlock {
-            val temp = irTemporary(values)
-            +irGetObject(companion.symbol)
-            +irCall(genericValuesSymbol, listOf(enumClass.defaultType)).apply {
-                putValueArgument(0, irGet(temp))
-            }
+        return irCall(genericValuesSymbol, listOf(enumClass.defaultType)).apply {
+            putValueArgument(0, loweredEnum.getValuesField(startOffset, endOffset))
         }
     }
 
     fun IrBuilderWithScope.enumValueOf(enumClass: IrClass, value: IrExpression): IrExpression {
         val loweredEnum = this@EnumSyntheticFunctionsBuilder.context.specialDeclarationsFactory.getLoweredEnum(enumClass)
-        val companion = enumClass.companionObject()
-        val values = loweredEnum.getValuesField(startOffset, endOffset)
-        return if (companion == null) {
-            irCall(genericValueOfSymbol, listOf(enumClass.defaultType)).apply {
-                putValueArgument(0, value)
-                putValueArgument(1, values)
-            }
-        } else irBlock {
-            val temp = irTemporary(values)
-            +irGetObject(companion.symbol)
-            +irCall(genericValueOfSymbol, listOf(enumClass.defaultType)).apply {
-                putValueArgument(0, value)
-                putValueArgument(1, irGet(temp))
-            }
+        return irCall(genericValueOfSymbol, listOf(enumClass.defaultType)).apply {
+            putValueArgument(0, value)
+            putValueArgument(1, loweredEnum.getValuesField(startOffset, endOffset))
         }
     }
 
@@ -203,6 +182,13 @@ internal class EnumClassLowering(val context: Context) : FileLoweringPass {
 
             implObject.declarations += createSyntheticValuesPropertyDeclaration(enumEntries)
 
+            val companion = irClass.companionObject()
+            if (companion != null) {
+                val constructor = implObject.constructors.single()
+                context.createIrBuilder(constructor.symbol).run {
+                    (constructor.body as IrBlockBody).statements += irGetObject(companion.symbol)
+                }
+            }
 
             irClass.declarations += implObject
         }
