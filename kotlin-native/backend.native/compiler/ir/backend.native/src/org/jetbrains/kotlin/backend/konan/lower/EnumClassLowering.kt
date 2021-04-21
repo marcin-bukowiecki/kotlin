@@ -35,18 +35,37 @@ import org.jetbrains.kotlin.name.Name
 private class EnumSyntheticFunctionsBuilder(val context: Context) {
     fun IrBuilderWithScope.enumValues(enumClass: IrClass): IrExpression {
         val loweredEnum = this@EnumSyntheticFunctionsBuilder.context.specialDeclarationsFactory.getLoweredEnum(enumClass)
+        val companion = enumClass.companionObject()
         val values = loweredEnum.getValuesField(startOffset, endOffset)
-        return irCall(genericValuesSymbol, listOf(enumClass.defaultType)).apply {
-            putValueArgument(0, values)
+        return if (companion == null) {
+            irCall(genericValuesSymbol, listOf(enumClass.defaultType)).apply {
+                putValueArgument(0, values)
+            }
+        } else irBlock {
+            val temp = irTemporary(values)
+            +irGetObject(companion.symbol)
+            +irCall(genericValuesSymbol, listOf(enumClass.defaultType)).apply {
+                putValueArgument(0, irGet(temp))
+            }
         }
     }
 
     fun IrBuilderWithScope.enumValueOf(enumClass: IrClass, value: IrExpression): IrExpression {
         val loweredEnum = this@EnumSyntheticFunctionsBuilder.context.specialDeclarationsFactory.getLoweredEnum(enumClass)
+        val companion = enumClass.companionObject()
         val values = loweredEnum.getValuesField(startOffset, endOffset)
-        return irCall(genericValueOfSymbol, listOf(enumClass.defaultType)).apply {
-            putValueArgument(0, value)
-            putValueArgument(1, values)
+        return if (companion == null) {
+            irCall(genericValueOfSymbol, listOf(enumClass.defaultType)).apply {
+                putValueArgument(0, value)
+                putValueArgument(1, values)
+            }
+        } else irBlock {
+            val temp = irTemporary(values)
+            +irGetObject(companion.symbol)
+            +irCall(genericValueOfSymbol, listOf(enumClass.defaultType)).apply {
+                putValueArgument(0, value)
+                putValueArgument(1, irGet(temp))
+            }
         }
     }
 
