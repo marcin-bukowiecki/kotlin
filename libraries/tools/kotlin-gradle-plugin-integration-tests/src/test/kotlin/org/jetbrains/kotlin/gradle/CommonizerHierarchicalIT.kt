@@ -87,7 +87,6 @@ class CommonizerHierarchicalIT : BaseGradleIT() {
         }
     }
 
-    @Ignore("Waiting for next bootstrap compiler")
     @Test
     fun `test commonizeHierarchicallyMultiModule`() {
         with(Project("commonizeHierarchicallyMultiModule")) {
