@@ -160,34 +160,32 @@ internal fun Project.registerEmbedAndSignAppleFrameworkTask() {
 
         task.onlyIf { !appleTargets.isNullOrEmpty() }
 
-        task.from(appleFrameworkDir(envFrameworkSearchDir)) {
-            val frameworkDirs = appleTargets
-                ?.flatMap { target ->
-                    target.binaries.withType(Framework::class.java).matching { f -> f.buildType == envBuildType }
-                }
-                ?.map { framework ->
-                    framework.outputFile.name + "/**"
-                }
-                ?: emptyList()
-            it.include(frameworkDirs)
+        task.from(appleFrameworkDir(envFrameworkSearchDir)) { spec ->
+            appleTargets?.all { target ->
+                target.binaries.withType(Framework::class.java)
+                    .matching { f -> f.buildType == envBuildType }
+                    .all { framework ->
+                        spec.include(framework.outputFile.name + "/**")
+                    }
+            }
         }
 
         task.into(envEmbeddedFrameworksDir)
 
         if (envSign != null) {
             task.doLast {
-                appleTargets
-                    ?.flatMap {
-                        it.binaries.withType(Framework::class.java).matching { f -> f.buildType == envBuildType }
-                    }
-                    ?.map {
-                        envEmbeddedFrameworksDir.resolve(it.outputFile.name).resolve(it.outputFile.nameWithoutExtension)
-                    }
-                    ?.forEach { binaryFile ->
-                        exec {
-                            it.commandLine("codesign", "--force", "--sign", envSign, "--", binaryFile)
+                appleTargets?.all { target ->
+                    target.binaries.withType(Framework::class.java)
+                        .matching { f -> f.buildType == envBuildType }
+                        .all { framework ->
+                            val binary = envEmbeddedFrameworksDir
+                                .resolve(framework.outputFile.name)
+                                .resolve(framework.outputFile.nameWithoutExtension)
+                            exec {
+                                it.commandLine("codesign", "--force", "--sign", envSign, "--", binary)
+                            }
                         }
-                    }
+                }
             }
         }
     }
